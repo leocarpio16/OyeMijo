@@ -1,0 +1,67 @@
+# ROADMAP · Mijo
+
+Entrega: **martes 10 de noviembre, 15:00** en `HACKATHON-ENTREGABLES/Datisa/` (Codigo/ y Documentacion/ con Keynote).
+Regla: al terminar cada bloque → compila (`./scripts/build.sh`), captura, explicación al equipo, commit.
+Marca: [ ] pendiente · [x] hecho.
+
+## Bloque 0 · Base (lunes 9, ~14:30–15:30)
+- [ ] Commit inicial y push a OyeMijo
+- [ ] Modelos SwiftData: `Familiar`, `Medicina`, `Toma`, `Comida`, `FichaMedica`, `Ajustes` (tema ntfy)
+- [ ] Pantalla raíz: un botón grande "Hablar con Mijo" + botón rojo "Necesito ayuda"
+- [ ] Datos de ejemplo realistas (doña Mari, su hijo Leo, Losartán 50 mg)
+- **Listo cuando:** compila y se ve en el simulador
+
+## Bloque 1 · Voz (lunes, ~15:30–17:30) — núcleo
+- [ ] Servicio de voz: hablar (AVSpeechSynthesizer es-MX) y escuchar (Speech, en el dispositivo)
+- [ ] Router de emergencia por palabras clave
+- [ ] Agente: `LanguageModelSession` con instrucciones de "nieto" + herramientas: `llamarFamiliar`, `crearRecordatorioMedicina`, `consultarMedicina`, `registrarComida`, `avisarFamilia`, `decirDireccion`
+- [ ] Manejo de `guardrailViolation` con frase fija
+- [ ] ⚙️ Usuario en Xcode: permisos de micrófono y reconocimiento de voz (te paso los pasos)
+- **Listo cuando:** "Recuérdame la pastilla a las 9" crea el recordatorio y Mijo lo dice en voz
+
+## Bloque 2 · Notificaciones con voz y medicinas (lunes, ~17:30–19:30)
+- [ ] Generar audio de la frase (voz de Mijo) en Library/Sounds y usarlo como sonido
+- [ ] Categorías con botones: [Sí] [Todavía no] / [Ya me la tomé] [Más tarde]
+- [ ] Respuestas registradas sin abrir la app; reintento a los 30 min
+- [ ] AlarmKit para medicinas críticas
+- **Listo cuando:** en el simulador llega "¿Ya cenó, doña Mari?" con voz y el botón queda registrado
+
+## Bloque 3 · Familia por ntfy (lunes, ~19:30–20:30)
+- [ ] `NtfyService`: POST con título, mensaje, prioridad y ubicación
+- [ ] Eventos: caída, medicina sin confirmar, comida sin confirmar
+- [ ] Probar con la app ntfy en el teléfono de Arturo o Sebastian
+- **Listo cuando:** el aviso llega a otro teléfono
+
+## Bloque 4 · Caídas (lunes, ~20:30–22:00)
+- [ ] Protocolo fijo con voz y botones gigantes de respaldo
+- [ ] Rama "me duele": ntfy + pantalla de emergencia + dirección en voz (CoreLocation) + ficha médica
+- [ ] Rama "no me duele": pasos para levantarse
+- **Listo cuando:** el camino completo funciona sin tocar más de 2 veces
+
+## Bloque 5 · Siri y configuración (martes 10, ~8:00–10:00)
+- [ ] App Shortcuts: "Habla con Mijo", "Mijo, me caí", "Pregúntale a Mijo si ya me tomé la pastilla"
+- [ ] Pantalla oculta de configuración (familia), grabar voz del familiar
+- **Listo cuando:** "Oye Siri, habla con Mijo" abre Mijo escuchando en el iPhone
+
+## Bloque 6 · iPhone real y pulido (martes, ~10:00–12:00)
+- [ ] ⚙️ Usuario: firma con Apple ID, Modo desarrollador en el iPhone, instalar
+- [ ] Probar todo en el iPhone 17 Pro (voz, llamadas, ntfy, Siri)
+- [ ] Pulido visual: botones ≥ 70 pt, Dynamic Type, alto contraste, sin rasgos de plantilla
+- [ ] Deseables si hay tiempo (orden del PRD)
+
+## Bloque 7 · Entrega (martes, ~12:00–14:30)
+- [ ] README, PRD actualizado con lo que realmente existe
+- [ ] Keynote: título, propósito, necesidad, integrantes, tecnologías, repositorios
+- [ ] Guion de pitch 5 min + 8 preguntas del jurado
+- [ ] Video de respaldo de la demo
+- [ ] Revisar secretos, `git status` limpio
+- [ ] Copiar a `Datisa/Codigo` y `Datisa/Documentacion`, push **antes de las 14:30**
+
+## Orden de sacrificio si hay retraso
+1. Deseables → 2. AlarmKit → 3. Grabación de voz del familiar → 4. Rama "no me duele" detallada → 5. Herramientas extra del agente.
+**Nunca se sacrifica:** voz + agente, notificación con respuesta, medicinas, protocolo de caída, aviso por ntfy.
+
+## Roles sugeridos
+- **Claude:** código, compilación, explicación de cada archivo.
+- **Leo:** decisiones, pruebas en el iPhone, pasos en Xcode.
+- **Arturo y Sebastian:** pruebas de ntfy en sus teléfonos, Keynote, pitch, video de respaldo, preguntas del jurado.

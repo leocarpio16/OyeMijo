@@ -1,0 +1,10 @@
+.DS_Store
+build/
+build.log
+DerivedData/
+xcuserdata/
+*.xcuserstate
+.claude/settings.local.json
+hackAthon-mac-descartado/
+research_notes/
+reports/
