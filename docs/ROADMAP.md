@@ -19,6 +19,16 @@ Marca: [ ] pendiente · [x] hecho.
 - [ ] ⚙️ Usuario en Xcode: permisos de micrófono y reconocimiento de voz (te paso los pasos)
 - **Listo cuando:** "Recuérdame la pastilla a las 9" crea el recordatorio y Mijo lo dice en voz
 
+## Bloque 1b · Registro por voz (lunes, ~1 h, justo después del Bloque 1) — F6
+- [ ] Mostrar el registro solo si no hay perfil (`Ajustes` vacío); quitar la carga automática de datos de ejemplo en el teléfono real
+- [ ] Componente de paso: pregunta grande en serif + Mijo pequeño + micrófono + texto entendido + [Sí] [Otra vez]
+- [ ] Paso nombre y paso persona de confianza (voz + selector de Contactos)
+- [ ] Paso conectar a la familia: QR del tema de ntfy (CoreImage)
+- [ ] Paso primera medicina por voz (Foundation Models `@Generable`) con respaldo de escribir
+- [ ] Paso permisos ("Permitir todo") y pantalla "¡Listo!"
+- **Listo cuando:** con la app recién instalada, se crea el perfil completo solo hablando y se llega a Inicio
+- Diseño: pantallas A–H de "Oye Mijito – Pantallas", minimalista
+
 ## Bloque 2 · Notificaciones con voz y medicinas (lunes, ~17:30–19:30)
 - [ ] Generar audio de la frase (voz de Mijo) en Library/Sounds y usarlo como sonido
 - [ ] Categorías con botones: [Sí] [Todavía no] / [Ya me la tomé] [Más tarde]
@@ -58,7 +68,7 @@ Marca: [ ] pendiente · [x] hecho.
 - [ ] Copiar a `Datisa/Codigo` y `Datisa/Documentacion`, push **antes de las 14:30**
 
 ## Orden de sacrificio si hay retraso
-1. Deseables → 2. AlarmKit → 3. Grabación de voz del familiar → 4. Rama "no me duele" detallada → 5. Herramientas extra del agente.
+1. Deseables → 2. AlarmKit → 3. Grabación de voz del familiar → 4. Rama "no me duele" detallada → 5. Herramientas extra del agente → 6. Pasos opcionales del registro por voz (QR de familia y primera medicina; nombre y persona de confianza se quedan).
 **Nunca se sacrifica:** voz + agente, notificación con respuesta, medicinas, protocolo de caída, aviso por ntfy.
 
 ## Roles sugeridos

@@ -20,10 +20,13 @@
 - `DesignSystem/`: `Theme` (tokens del diseño del equipo), `TalkButton`, `WhitePill`, `MijoAvatar` (para Escuchando/Respuesta).
 - Se borraron (con permiso) los componentes de diseños descartados.
 
+- **Nuevo (9 nov, 17:15): registro e "inicio de sesión" por voz (F6 del PRD, Bloque 1b del ROADMAP)**, minimalista. Sin cuentas: el perfil vive en el teléfono (Sign in with Apple no sirve con cuenta gratis; no hay servidor para SMS). "Conectar a la familia" = QR del tema ntfy. Fuera: intereses/talleres.
+
 ## Siguiente paso exacto
 1. Leer `Escuchando.dc.html` y `Respuesta.dc.html` del artifact del equipo.
-2. Bloque 1: servicio de voz (AVSpeechSynthesizer es-MX + Speech en el dispositivo), router de emergencia por palabras clave, agente `LanguageModelSession` con herramientas.
+2. Bloque 1: servicio de voz (AVSpeechSynthesizer es-MX + Speech en el dispositivo), router de emergencia por palabras clave, agente `LanguageModelSession` con herramientas. El servicio de voz debe servir también para el registro (preguntar → escuchar → confirmar).
 3. Pantallas "Mijo escuchando" y "Mijo responde" copiando el diseño; conectar `TalkButton` de Inicio.
+4. Bloque 1b: registro por voz con las pantallas A–H del diseño (leer `Nombre`, `Contacto`, `Conectar`, `Medicina`, `Permisos`, `Listo`).
 
 ## Pendientes del usuario
 - `! git push -u origin main`.

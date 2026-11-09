@@ -66,6 +66,18 @@ Datos de apoyo (ver `docs/INVESTIGACION_GLOBAL.md`):
 - Pantalla oculta (mantener presionado). La familia registra familiares, medicinas, horarios de comidas, ficha médica, tema de ntfy y graba su voz.
 - La persona mayor nunca ve ajustes.
 
+### F6 · Registro por voz (primera vez) — Pendiente
+- La primera vez que se abre la app, **Mijo guía el registro hablando**. La persona contesta con la voz y siempre tiene un botón grande de respaldo.
+- "Iniciar sesión" = crear el perfil **en el teléfono**. No hay cuentas, servidor ni contraseñas. Después Mijo ya "le reconoce" porque los datos se quedan en el iPhone.
+- Pasos, una pregunta por pantalla:
+  1. "¿Cómo le gusta que le diga?" → escucha → "¿Le digo Doña Mari?" [Sí] [Otra vez].
+  2. "¿A quién le aviso si me necesita?" → nombre por voz y se elige el contacto con un toque (selector de Contactos de iOS, sin pedir permiso).
+  3. Conectar a la familia: código QR del tema de ntfy para escanear con la app ntfy.
+  4. "Dígame su primera pastilla" ("Losartán a las 9") → Foundation Models extrae nombre, dosis y hora → confirmación.
+  5. Permisos: micrófono, avisos y ubicación, con un "Permitir todo".
+  6. "¡Listo, Doña Mari!" → Inicio.
+- Diseño minimalista según las pantallas A–H de "Oye Mijito – Pantallas": una pregunta grande, Mijo pequeño, el micrófono y lo que entendió escrito.
+
 ## 5. Deseables (solo si sobra tiempo, en este orden)
 1. Widget de pantalla de bloqueo / botón de Acción: "Hablar con Mijo".
 2. Detección de caídas con Core Motion (caída libre + impacto + quietud) con Mijo abierto. No es de grado médico.
@@ -77,6 +89,8 @@ Datos de apoyo (ver `docs/INVESTIGACION_GLOBAL.md`):
 - Guías largas paso a paso ("Enséñame"): agobian; el agente hace la tarea y deja una pista corta.
 - Check-in de "señal de vida" como función propia.
 - Clasificadores con Create ML.
+- Iniciar sesión con Apple o con número de teléfono: la cuenta de Apple gratuita no permite "Sign in with Apple" y no hay servidor para SMS. El perfil vive en el teléfono (F6).
+- Intereses y talleres cercanos (pantallas "Intereses" y "Talleres cerca" del diseño).
 
 ## 7. Restricciones técnicas
 - iOS 26.0+, iPhone 17 Pro (iOS 26.1) para la demo, Xcode 26.6.
