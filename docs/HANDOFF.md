@@ -1,37 +1,43 @@
-# HANDOFF · lunes 9 nov 2026, 14:30
+# HANDOFF · lunes 9 nov 2026, ~17:05
 
 ## Dónde estamos
-- Fin de la fase de ideación. PRD v2.0 y ROADMAP escritos. **Siguiente: Bloque 0 del ROADMAP.**
-- Último commit: ninguno (repo inicializado, remoto `origin` = github.com/leocarpio16/OyeMijo, privado). Hay archivos sin commit: todo el proyecto.
-- ¿Compila? Sí (`./scripts/build.sh --solo-build`), app base con 3 pestañas provisionales y `DesignSystem/Theme.swift`.
+- **Bloque 0 terminado** (~1.5 h tarde vs ROADMAP por varias vueltas de diseño). Siguiente: **Bloque 1 · Voz**.
+- Último commit: `045f148` Bloque 0. Antes: `e843f52` commit inicial.
+- **Push pendiente:** el sistema de permisos bloquea `git push` desde Claude. Leo lo hace con `! git push -u origin main`.
+- ¿Compila? Sí (`./scripts/build.sh --solo-build`). La app ya corre en el iPhone de Leo (Personal Team `R2822V9YZC`, bundle `comTodoBien.hackAthon`).
 
 ## Decisiones vigentes (no re-discutir)
-- Nombre: **Mijo**. Agente por voz con Foundation Models + tool calling.
-- Funciones: F0 agente, F1 notificaciones con voz ("¿Ya cenó, doña Mari?") con botones, F2 medicinas con verificación, F3 caídas con **ruta fija sin IA**, F4 avisos a la familia por **ntfy.sh**, F5 configuración por la familia.
-- Fuera: fraude, guías largas, check-in de señal de vida, Create ML.
-- iOS 26.0+ (deployment target ya bajado a 26.0). iPhone 17 Pro con iOS 26.1. Xcode 26.6. **No actualizar dispositivos antes de la entrega.**
-- Sin cuenta de Apple Developer de pago.
-- El usuario aprueba commits y push. Entrega en `HACKATHON-ENTREGABLES/Datisa/` (solo tocar esa carpeta).
+- **Diseño = el del equipo "Oye Mijito – Pantallas"**: https://claude.ai/artifact/9TkGCckH36rwbxGNZHwsFq (tipo Design; las pantallas son `project/*.dc.html`: Main, Escuchando, Respuesta, Ayuda, Pastillas, Familia, etc.). Leerlas con Artifact `read` + `paths`. **No inventar estilos**: Leo rechazó ~8 propuestas propias por "verse hechas con IA".
+- Fuentes: Avenir Next + New York (serif del sistema) en lugar de Figtree/Newsreader (no descargamos fuentes).
+- Inicio: panel ámbar con Mijo, pastilla "Ayuda" arriba a la derecha (emergencia), "Buenas tardes," + nombre en serif, pastilla con la siguiente medicina, botón redondo ámbar "Toque y dígame qué necesita". Nada más.
+- Dynamic Type de `.large` a `.xxxLarge` (en `hackAthonApp.swift`).
+- Logo definitivo: `~/Downloads/WhatsApp Image 2026-11-09 at 15.11.38.jpeg` (fondo ámbar, gorra roja). Es el AppIcon y el asset `Mijo` (1600 px).
+- El sistema de diseño de Arturo (azul, fondo gris) quedó **descartado** visualmente; su texto describe funciones fuera del PRD (iOS 27, anti-fraude, enseñar): que no entren al pitch.
+- Lo demás del HANDOFF anterior sigue: Foundation Models + tool calling, emergencias sin IA, ntfy, iOS 26, sin cuenta de pago.
 
 ## Lo último que se hizo
-- Prueba real de Foundation Models en la Mac (scratchpad): español OK; tool calling OK ("márcale a mi hija" → llamarFamiliar); **guardrails bloquean "me caí y me duele"** → por eso emergencias sin IA. Usar `swiftc -parse-as-library`, no `swift script` (las macros @Generable fallan en modo intérprete).
-- Investigación global en `docs/INVESTIGACION_GLOBAL.md` (datos para pitch y datos a NO usar).
-- Documentos del equipo en `docs/equipo/` (ficha v1.2 y su investigación).
+- Modelos SwiftData en `Models/` (Familiar, Medicina, Toma, Comida, FichaMedica, Ajustes, Horario) + `SampleData` (Doña Mari, Leo/Carmen con teléfonos ficticios `55 0000 000x`, Losartán 50 mg 9:00/21:00, Metformina).
+- `DesignSystem/`: `Theme` (tokens del diseño del equipo), `TalkButton`, `WhitePill`, `MijoAvatar` (para Escuchando/Respuesta).
+- Se borraron (con permiso) los componentes de diseños descartados.
 
 ## Siguiente paso exacto
-1. Pedir al usuario OK para el **commit inicial** + push a OyeMijo.
-2. Bloque 0: modelos SwiftData, pantalla raíz (botón "Hablar con Mijo" + "Necesito ayuda"), datos de ejemplo. Reemplazar las 3 pestañas provisionales de `ContentView.swift`.
+1. Leer `Escuchando.dc.html` y `Respuesta.dc.html` del artifact del equipo.
+2. Bloque 1: servicio de voz (AVSpeechSynthesizer es-MX + Speech en el dispositivo), router de emergencia por palabras clave, agente `LanguageModelSession` con herramientas.
+3. Pantallas "Mijo escuchando" y "Mijo responde" copiando el diseño; conectar `TalkButton` de Inicio.
 
 ## Pendientes del usuario
-- Bloque 1: agregar permisos de micrófono y reconocimiento de voz (Info del target en Xcode).
-- Bloque 6: firma con Apple ID (Personal Team), Modo desarrollador en el iPhone.
-- Que Arturo o Sebastian instalen la app **ntfy** para probar avisos.
+- `! git push -u origin main`.
+- Bloque 1: permisos de micrófono y reconocimiento de voz en Xcode (target → Info). Claude le pasa los pasos.
+- Opcional: en Xcode → General → Display Name = `Mijo` (hoy aparece "hackAthon").
+- Que Arturo o Sebastian instalen **ntfy**.
 
 ## Cuidado con
-- El `.xcodeproj` lo toca solo el usuario (excepto el deployment target, ya aprobado).
-- Compilar fuera del Escritorio (el script ya usa DerivedData en ~/Library) por errores de firma.
-- Xcode puede hacer `git add` solo; revisar `git status` antes de commitear.
+- Los nombres de capturas de macOS traen un espacio especial antes de "p.m.": copiarlas con glob a scratchpad antes de leerlas.
+- Dribbble bloquea lectura automática: pedir capturas.
+- El asset `MijoRecorte` (Mijo sin fondo) ya no se usa; se puede borrar si Leo aprueba.
+- SourceKit marca errores falsos ("Cannot find 'Theme'"); manda `./scripts/build.sh`.
+- Para reiniciar datos de ejemplo en el simulador: `xcrun simctl uninstall booted comTodoBien.hackAthon`.
 
 ## Archivos clave
-- `CLAUDE.md`, `docs/PRD.md`, `docs/ROADMAP.md`, `docs/IDEAS.md`, `scripts/build.sh`
-- `hackAthon/hackAthon/ContentView.swift`, `hackAthon/hackAthon/DesignSystem/Theme.swift`
+- `CLAUDE.md`, `docs/PRD.md`, `docs/ROADMAP.md`, `scripts/build.sh`
+- `hackAthon/hackAthon/ContentView.swift`, `hackAthonApp.swift`, `Models/`, `DesignSystem/`
