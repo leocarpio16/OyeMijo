@@ -5,7 +5,7 @@ Regla: al terminar cada bloque → compila (`./scripts/build.sh`), captura, expl
 Marca: [ ] pendiente · [x] hecho.
 
 ## Bloque 0 · Base (lunes 9, ~14:30–15:30)
-- [x] Commit inicial (e843f52) y Bloque 0 (045f148) · push pendiente (lo hace Leo)
+- [x] Commit inicial (e843f52) y Bloque 0 (045f148)
 - [x] Modelos SwiftData: `Familiar`, `Medicina`, `Toma`, `Comida`, `FichaMedica`, `Ajustes` (tema ntfy)
 - [x] Pantalla raíz: un botón grande "Hablar con Mijo" + botón rojo "Necesito ayuda"
 - [x] Datos de ejemplo realistas (doña Mari, su hijo Leo, Losartán 50 mg)

@@ -3,7 +3,7 @@
 ## Dónde estamos
 - **Bloque 1 · Voz: ~90 %.** Leo agregó los permisos y probó en su iPhone; se arreglaron los 3 problemas que encontró (ver abajo). Falta su 2.ª prueba.
 - Último commit: `e91b844` (plan F6). **Cambios sin commit:** todo el Bloque 1 (`Services/`, `Conversation/`, componentes de `DesignSystem/`, `ContentView`, `Theme`, `hackAthonApp`, `.xcodeproj` con los 2 permisos, ROADMAP, HANDOFF).
-- **Push pendiente** (Leo lo hará más adelante): `! git push -u origin main`.
+- Push hecho: GitHub tiene hasta `149c2af`. Siguientes pushes: `! git push`.
 - ¿Compila? Sí, sin avisos.
 
 ## Decisiones vigentes (no re-discutir)
@@ -45,7 +45,6 @@
 ## Pendientes del usuario
 - Voz más natural: en el iPhone, Ajustes → Accesibilidad → Contenido leído → Voces → Español (México) → descargar **Juan (Mejorada)** o **Paulina (Premium)**. La app la elige sola.
 - Para el aviso: instalar **ntfy** en otro teléfono y suscribirse al tema que sale en la consola de Xcode.
-- `! git push -u origin main` (cuando Leo quiera).
 - Opcional: en Xcode → General → Display Name = `Mijo` (hoy aparece "hackAthon").
 
 ## Cuidado con
