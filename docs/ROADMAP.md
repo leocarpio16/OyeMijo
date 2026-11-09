@@ -5,10 +5,10 @@ Regla: al terminar cada bloque → compila (`./scripts/build.sh`), captura, expl
 Marca: [ ] pendiente · [x] hecho.
 
 ## Bloque 0 · Base (lunes 9, ~14:30–15:30)
-- [ ] Commit inicial y push a OyeMijo
-- [ ] Modelos SwiftData: `Familiar`, `Medicina`, `Toma`, `Comida`, `FichaMedica`, `Ajustes` (tema ntfy)
-- [ ] Pantalla raíz: un botón grande "Hablar con Mijo" + botón rojo "Necesito ayuda"
-- [ ] Datos de ejemplo realistas (doña Mari, su hijo Leo, Losartán 50 mg)
+- [x] Commit inicial (e843f52) · push pendiente (lo hace Leo)
+- [x] Modelos SwiftData: `Familiar`, `Medicina`, `Toma`, `Comida`, `FichaMedica`, `Ajustes` (tema ntfy)
+- [x] Pantalla raíz: un botón grande "Hablar con Mijo" + botón rojo "Necesito ayuda"
+- [x] Datos de ejemplo realistas (doña Mari, su hijo Leo, Losartán 50 mg)
 - **Listo cuando:** compila y se ve en el simulador
 
 ## Bloque 1 · Voz (lunes, ~15:30–17:30) — núcleo
