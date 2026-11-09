@@ -12,11 +12,15 @@ Marca: [ ] pendiente · [x] hecho.
 - **Listo cuando:** compila y se ve en el simulador
 
 ## Bloque 1 · Voz (lunes, ~15:30–17:30) — núcleo
-- [ ] Servicio de voz: hablar (AVSpeechSynthesizer es-MX) y escuchar (Speech, en el dispositivo)
-- [ ] Router de emergencia por palabras clave
-- [ ] Agente: `LanguageModelSession` con instrucciones de "nieto" + herramientas: `llamarFamiliar`, `crearRecordatorioMedicina`, `consultarMedicina`, `registrarComida`, `avisarFamilia`, `decirDireccion`
-- [ ] Manejo de `guardrailViolation` con frase fija
-- [ ] ⚙️ Usuario en Xcode: permisos de micrófono y reconocimiento de voz (te paso los pasos)
+- [x] Servicio de voz: hablar (AVSpeechSynthesizer es-MX) y escuchar (Speech, en el dispositivo) — compila; **sin probar con micrófono** (faltan los permisos)
+- [x] Router de emergencia por palabras clave (por ahora contesta con frase fija + botón "Llamar a Leo"; el protocolo es el Bloque 4)
+- [x] Agente: `LanguageModelSession` con instrucciones de "nieto" + herramientas `llamarFamiliar`, `crearRecordatorioMedicina`, `consultarMedicina`, `registrarComida` — **sin probar con la IA real**
+- [ ] Herramientas `avisarFamilia` (va con ntfy, Bloque 3) y `decirDireccion` (va con CoreLocation, Bloque 4)
+- [x] Manejo de `guardrailViolation` con frase fija
+- [x] Pantallas "Mijo escuchando" y "Mijo le contesta" copiadas del diseño del equipo; botón de Inicio conectado
+- [x] ⚙️ Usuario en Xcode: permisos de micrófono y reconocimiento de voz
+- [x] Arreglos tras la 1.ª prueba de Leo: voz natural (sin voces "de efecto"), frases cortas ("Ok") sin IA, herramienta `marcarMedicinaTomada`, Mijo marca solo
+- [x] Emergencia por voz: aviso automático por ntfy + llamada automática al familiar principal (adelanto de Bloques 3 y 4)
 - **Listo cuando:** "Recuérdame la pastilla a las 9" crea el recordatorio y Mijo lo dice en voz
 
 ## Bloque 1b · Registro por voz (lunes, ~1 h, justo después del Bloque 1) — F6
@@ -37,7 +41,7 @@ Marca: [ ] pendiente · [x] hecho.
 - **Listo cuando:** en el simulador llega "¿Ya cenó, doña Mari?" con voz y el botón queda registrado
 
 ## Bloque 3 · Familia por ntfy (lunes, ~19:30–20:30)
-- [ ] `NtfyService`: POST con título, mensaje, prioridad y ubicación
+- [x] `NtfyService`: POST con título, mensaje y prioridad (JSON; probado con ntfy.sh → 200) · falta ubicación
 - [ ] Eventos: caída, medicina sin confirmar, comida sin confirmar
 - [ ] Probar con la app ntfy en el teléfono de Arturo o Sebastian
 - **Listo cuando:** el aviso llega a otro teléfono

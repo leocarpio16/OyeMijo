@@ -32,6 +32,12 @@ enum Theme {
         /// Pastillas blancas y su sombra cálida.
         static let surface = Color.white
         static let shadow = Color(hex: 0x5D352B)
+        /// Arriba del degradado de "Mijo le contesta" (baja a crema).
+        static let answerGlow = Color(hex: 0xFFE8B5)
+        /// Tarjeta de atrás, inclinada, en la respuesta de Mijo.
+        static let cardBack = Color(hex: 0xFEEBC1)
+        /// Brillo naranja debajo del botón ámbar del micrófono.
+        static let amberGlow = Color(hex: 0xF59D1D)
     }
 
     // MARK: Tipografía
@@ -50,6 +56,24 @@ enum Theme {
         static let pill = avenir("DemiBold", 20, .title3)
         /// "Ayuda" en la pastilla de arriba.
         static let helpPill = avenir("Bold", 19, .headline)
+        /// "Le escucho, Doña Mari".
+        static let listening = avenir("DemiBold", 22, .title2)
+        /// Texto de apoyo: "Usted preguntó por su pastilla", "Faltan 20 minutos".
+        static let support = avenir("Regular", 22, .title2)
+        /// "Mijo" en la tarjeta y "Su nieto en el teléfono" debajo.
+        static let cardName = avenir("Bold", 22, .title2)
+        static let cardRole = avenir("Regular", 20, .title3)
+        /// Etiquetas de la tarjeta: "Losartán 50 mg".
+        static let chip = avenir("DemiBold", 20, .title3)
+        /// Botón café grande: "Ya terminé", "Ya me la tomé".
+        static let primaryButton = avenir("Bold", 24, .title2)
+        /// Pastilla "Escuchar".
+        static let pillBold = avenir("Bold", 21, .title3)
+
+        /// Tamaños de la letra con serifa (New York). Se usan con `.serif(_:)`.
+        static let quoteSize: CGFloat = 34   // lo que dijo la persona
+        static let titleSize: CGFloat = 40   // "Mijo le contesta"
+        static let answerSize: CGFloat = 36  // la respuesta de Mijo
     }
 
     // MARK: Espaciado
@@ -61,12 +85,16 @@ enum Theme {
         /// Margen lateral de pantalla.
         static let screen: CGFloat = 24
         static let xl: CGFloat = 24
+        /// Separación entre bloques en "Mijo le contesta" y relleno de la tarjeta.
+        static let section: CGFloat = 22
     }
 
     // MARK: Radios de esquina
     enum Radius {
         /// Esquinas de abajo del panel ámbar de Mijo.
         static let header: CGFloat = 56
+        /// Tarjeta de la respuesta de Mijo.
+        static let card: CGFloat = 34
     }
 
     // MARK: Tamaños
@@ -82,6 +110,35 @@ enum Theme {
         static let helpPill: CGFloat = 52
         /// Avatar de Mijo en otras pantallas (nunca menos de 29 pt).
         static let mijoAvatar: CGFloat = 88
+        /// Botón redondo blanco (regresar) y pastilla "Escuchar".
+        static let roundButton: CGFloat = 64
+        /// Botón café grande y botón ámbar pequeño del micrófono.
+        static let actionButton: CGFloat = 76
+        /// Mijo en la tarjeta de respuesta y alto de sus etiquetas.
+        static let cardAvatar: CGFloat = 54
+        static let chip: CGFloat = 46
+        /// Barras que se mueven mientras Mijo escucha.
+        static let waveBar: CGFloat = 6
+    }
+}
+
+/// Letra con serifa (New York) que crece con Dynamic Type, igual que el resto.
+private struct SerifFont: ViewModifier {
+    @ScaledMetric private var size: CGFloat
+
+    init(size: CGFloat) {
+        _size = ScaledMetric(wrappedValue: size, relativeTo: .largeTitle)
+    }
+
+    func body(content: Content) -> some View {
+        content.font(.system(size: size, weight: .medium, design: .serif))
+    }
+}
+
+extension View {
+    /// `.serif(Theme.Typography.answerSize)`
+    func serif(_ size: CGFloat) -> some View {
+        modifier(SerifFont(size: size))
     }
 }
 

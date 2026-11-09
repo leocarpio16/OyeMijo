@@ -17,6 +17,8 @@ import SwiftData
 struct ContentView: View {
     @Query private var ajustes: [Ajustes]
     @Query private var medicinas: [Medicina]
+    @Environment(\.modelContext) private var context
+    @State private var hablandoConMijo = false
 
     var body: some View {
         GeometryReader { geo in
@@ -55,13 +57,16 @@ struct ContentView: View {
                 Spacer(minLength: Theme.Spacing.l)
 
                 TalkButton {
-                    // Bloque 1: abre la conversación por voz con Mijo.
+                    hablandoConMijo = true
                 }
                 .padding(.bottom, geo.safeAreaInsets.bottom + Theme.Spacing.s)
             }
             .ignoresSafeArea()
         }
         .background(Theme.Palette.cream)
+        .fullScreenCover(isPresented: $hablandoConMijo) {
+            ConversationView(context: context, nombre: ajustes.first?.comoLlamarla ?? "")
+        }
     }
 
     /// "Buenos días," / "Buenas tardes," / "Buenas noches," según la hora.
@@ -76,28 +81,6 @@ struct ContentView: View {
         let manana = medicinas.compactMap { med in med.horarios.min().map { (med, $0) } }
         guard let (med, horario) = (hoy.isEmpty ? manana : hoy).min(by: { $0.1 < $1.1 }) else { return nil }
         return "\(horario.texto) · Pastilla de \(med.paraQue)"
-    }
-}
-
-/// Panel ámbar con las esquinas de abajo redondeadas y Mijo grande adentro.
-private struct MijoHeader: View {
-    var body: some View {
-        // El panel tiene el color de arriba de la imagen: así no se nota dónde empieza.
-        Theme.Palette.brandAmberTop
-            .frame(height: Theme.Size.header)
-            // Mijo va como capa encima: es más ancho que la pantalla y se recorta,
-            // pero como capa no empuja ni cambia el ancho de lo demás.
-            .overlay(alignment: .top) {
-                Image("Mijo")
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: Theme.Size.headerMijo, height: Theme.Size.headerMijo)
-                    .offset(y: 30) // Mijo un poco abajo, como en el diseño
-            }
-            .clipShape(UnevenRoundedRectangle(bottomLeadingRadius: Theme.Radius.header,
-                                              bottomTrailingRadius: Theme.Radius.header))
-            .accessibilityElement()
-            .accessibilityLabel("Mijo, su nieto virtual")
     }
 }
 

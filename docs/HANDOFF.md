@@ -1,10 +1,10 @@
-# HANDOFF · lunes 9 nov 2026, ~17:05
+# HANDOFF · lunes 9 nov 2026, ~18:00
 
 ## Dónde estamos
-- **Bloque 0 terminado** (~1.5 h tarde vs ROADMAP por varias vueltas de diseño). Siguiente: **Bloque 1 · Voz**.
-- Último commit: `045f148` Bloque 0. Antes: `e843f52` commit inicial.
-- **Push pendiente:** el sistema de permisos bloquea `git push` desde Claude. Leo lo hace con `! git push -u origin main`.
-- ¿Compila? Sí (`./scripts/build.sh --solo-build`). La app ya corre en el iPhone de Leo (Personal Team `R2822V9YZC`, bundle `comTodoBien.hackAthon`).
+- **Bloque 1 · Voz: ~90 %.** Leo agregó los permisos y probó en su iPhone; se arreglaron los 3 problemas que encontró (ver abajo). Falta su 2.ª prueba.
+- Último commit: `e91b844` (plan F6). **Cambios sin commit:** todo el Bloque 1 (`Services/`, `Conversation/`, componentes de `DesignSystem/`, `ContentView`, `Theme`, `hackAthonApp`, `.xcodeproj` con los 2 permisos, ROADMAP, HANDOFF).
+- **Push pendiente** (Leo lo hará más adelante): `! git push -u origin main`.
+- ¿Compila? Sí, sin avisos.
 
 ## Decisiones vigentes (no re-discutir)
 - **Diseño = el del equipo "Oye Mijito – Pantallas"**: https://claude.ai/artifact/9TkGCckH36rwbxGNZHwsFq (tipo Design; las pantallas son `project/*.dc.html`: Main, Escuchando, Respuesta, Ayuda, Pastillas, Familia, etc.). Leerlas con Artifact `read` + `paths`. **No inventar estilos**: Leo rechazó ~8 propuestas propias por "verse hechas con IA".
@@ -22,19 +22,35 @@
 
 - **Nuevo (9 nov, 17:15): registro e "inicio de sesión" por voz (F6 del PRD, Bloque 1b del ROADMAP)**, minimalista. Sin cuentas: el perfil vive en el teléfono (Sign in with Apple no sirve con cuenta gratis; no hay servidor para SMS). "Conectar a la familia" = QR del tema ntfy. Fuera: intereses/talleres.
 
+## Bloque 1: qué hay (9 nov, 17:30)
+- `Services/VoiceService.swift`: habla y escucha (es-MX). Si faltan los textos de permiso en el proyecto, `pedirPermisos()` regresa false en vez de tronar.
+- `Services/EmergencyRouter.swift`: palabras clave → `.caida / .malestar / .ayuda`. Hoy la conversación contesta con frase fija + botón "Llamar a <principal>"; el Bloque 4 lo cambia por el protocolo.
+- `Services/MijoActions.swift` (trabajo con SwiftData), `MijoTools.swift` (4 herramientas), `MijoAgent.swift` (sesión, frases fijas para filtro / IA no disponible).
+- `Conversation/`: `ConversationModel` (escuchar → pensar → contestar), `ListeningView`, `AnswerView`, `ConversationView` (se abre desde el botón de Inicio; 2 s de silencio = "Ya terminé").
+- `DesignSystem/`: `MijoHeader` (salió de ContentView), `RoundIconButton`, `PrimaryButton`, `WaveBars`, `.serif(_:)`.
+- Fuera por ahora: `avisarFamilia` (Bloque 3) y `decirDireccion` (Bloque 4). Crear un recordatorio guarda la medicina, pero la notificación es del Bloque 2.
+
+## 1.ª prueba de Leo (18:00) y arreglos
+- Voz robótica → elegía "Shelley" (voz de efecto). Ahora: solo voces `com.apple.voice.*`, la de mejor calidad y, a igual calidad, de hombre.
+- "Ok" → la IA inventó la hora de la pastilla. Ahora las frases cortas ("ok", "sí", "gracias", "hola") se contestan sin IA, y las instrucciones piden usar herramientas solo con una petición clara y hablar siempre de usted.
+- "Me caí" pedía tocar un botón → ahora Mijo avisa solo por ntfy (prioridad urgente) y marca solo al familiar principal en cuanto termina de hablar. iOS siempre muestra un "Llamar" para confirmar: ninguna app puede marcar sin ese toque.
+- "Llama a Leo" también marca solo. Nueva herramienta `marcarMedicinaTomada` ("ya me tomé la de la presión").
+- El tema de ntfy se imprime en la consola de Xcode al abrir: `🔔 Tema de ntfy de la familia: mijo-…`.
+
 ## Siguiente paso exacto
-1. Leer `Escuchando.dc.html` y `Respuesta.dc.html` del artifact del equipo.
-2. Bloque 1: servicio de voz (AVSpeechSynthesizer es-MX + Speech en el dispositivo), router de emergencia por palabras clave, agente `LanguageModelSession` con herramientas. El servicio de voz debe servir también para el registro (preguntar → escuchar → confirmar).
-3. Pantallas "Mijo escuchando" y "Mijo responde" copiando el diseño; conectar `TalkButton` de Inicio.
-4. Bloque 1b: registro por voz con las pantallas A–H del diseño (leer `Nombre`, `Contacto`, `Conectar`, `Medicina`, `Permisos`, `Listo`).
+1. 2.ª prueba de Leo en el iPhone: "Ok", "¿A qué hora me toca la pastilla de la presión?", "Recuérdame la del azúcar a las 9 de la noche", "Ya me tomé la de la presión", "Llama a Leo", "Me caí" (con ntfy suscrito en otro teléfono).
+2. Arreglar lo que salga. Commit del Bloque 1.
+3. Bloque 1b: registro por voz con las pantallas A–H del diseño (leer `Nombre`, `Contacto`, `Conectar`, `Medicina`, `Permisos`, `Listo`).
 
 ## Pendientes del usuario
-- `! git push -u origin main`.
-- Bloque 1: permisos de micrófono y reconocimiento de voz en Xcode (target → Info). Claude le pasa los pasos.
+- Voz más natural: en el iPhone, Ajustes → Accesibilidad → Contenido leído → Voces → Español (México) → descargar **Juan (Mejorada)** o **Paulina (Premium)**. La app la elige sola.
+- Para el aviso: instalar **ntfy** en otro teléfono y suscribirse al tema que sale en la consola de Xcode.
+- `! git push -u origin main` (cuando Leo quiera).
 - Opcional: en Xcode → General → Display Name = `Mijo` (hoy aparece "hackAthon").
-- Que Arturo o Sebastian instalen **ntfy**.
 
 ## Cuidado con
+- Los bloques que el sistema llama desde otros hilos (audio, Speech) van en funciones `nonisolated static` de `VoiceService`: el proyecto usa MainActor por defecto y, si se escriben dentro de un método normal, la app truena al escuchar.
+- Para capturar una pantalla que no es Inicio: cambiar temporalmente la vista raíz en `hackAthonApp.swift`, `./scripts/build.sh --captura`, y restaurar.
 - Los nombres de capturas de macOS traen un espacio especial antes de "p.m.": copiarlas con glob a scratchpad antes de leerlas.
 - Dribbble bloquea lectura automática: pedir capturas.
 - El asset `MijoRecorte` (Mijo sin fondo) ya no se usa; se puede borrar si Leo aprueba.
