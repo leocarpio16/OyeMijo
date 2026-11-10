@@ -25,6 +25,8 @@ struct ContentView: View {
         case conversacion
         case ayuda
         case pastillas
+        /// "Oye Siri, Mijo, me caí": avisa y marca sin preguntar.
+        case caida
         var id: Self { self }
     }
 
@@ -90,12 +92,19 @@ struct ContentView: View {
                 try? await Task.sleep(for: .seconds(60))
             }
         }
+        // Recado de Siri ("Habla con Mijo", "Mijo, me caí").
+        .onChange(of: AppRouter.shared.pendiente, initial: true) { _, destino in
+            guard let destino else { return }
+            AppRouter.shared.pendiente = nil
+            pantalla = destino == .caida ? .caida : .conversacion
+        }
         .fullScreenCover(item: $pantalla) { pantalla in
             let nombre = ajustes.first?.comoLlamarla ?? ""
             switch pantalla {
             case .conversacion: ConversationView(context: context, nombre: nombre)
             case .ayuda: HelpView(context: context, nombre: nombre, motivo: .ayuda)
             case .pastillas: PillsView { self.pantalla = .conversacion }
+            case .caida: HelpView(context: context, nombre: nombre, motivo: .caida, frase: "me caí")
             }
         }
     }

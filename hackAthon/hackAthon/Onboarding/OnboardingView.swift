@@ -28,7 +28,7 @@ struct OnboardingView: View {
             case .permisos: pasoPermisos
             case .listo:
                 OnboardingHero(titulo: "¡Listo, \(modelo.nombre)!",
-                               texto: "Ya puede hablarme cuando quiera. Solo toque el botón y dígame qué necesita.",
+                               texto: "Ya puede hablarme cuando quiera. Toque el botón o diga «Oye Siri, habla con Mijo».",
                                boton: "Empezar",
                                height: Theme.Size.doneHeader, mijoSize: Theme.Size.doneMijo,
                                titleSize: Theme.Typography.doneSize) {

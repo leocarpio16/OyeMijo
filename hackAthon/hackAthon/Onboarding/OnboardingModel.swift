@@ -70,7 +70,7 @@ final class OnboardingModel {
         case .contacto: "¿A quién le aviso si me necesita? Elija a su persona de confianza."
         case .conectar: "Ahora \(persona?.nombre ?? "su familiar") escanea este código con su celular."
         case .permisos: "Necesito dos permisos para escucharle y cuidarle. Toque Permitir todo."
-        case .listo: "¡Listo, \(nombre)! Ya puede hablarme cuando quiera."
+        case .listo: "¡Listo, \(nombre)! Ya puede hablarme cuando quiera. Toque el botón o diga: Oye Siri, habla con Mijo."
         }
     }
 

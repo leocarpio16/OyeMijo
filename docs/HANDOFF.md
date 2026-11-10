@@ -1,4 +1,4 @@
-# HANDOFF · lunes 9 nov 2026, ~19:40
+# HANDOFF · lunes 9 nov 2026, ~20:00
 
 ## Dónde estamos
 - **Bloque 1 · Voz: ~90 %.** Leo agregó los permisos y probó en su iPhone; se arreglaron los 3 problemas que encontró (ver abajo). Falta su 2.ª prueba.
@@ -39,22 +39,22 @@
 - El tema de ntfy se imprime en la consola de Xcode al abrir: `🔔 Tema de ntfy de la familia: mijo-…`.
 
 ## Plan nuevo (18:30, aprobado por Leo: "la veo muy inmadura")
-Orden por lo que ve el jurado: 1) Ayuda → "¿Está bien?" ✅ · 2) "Sus pastillas de hoy" ✅ · 3) Mijo pregunta por ti ✅ (falta probar en iPhone) · 4) Registro por voz corto ✅ (Bienvenida → Nombre → Contacto → QR → Permisos → Listo) · 5) Siri · 6) Pulido (transiciones, vibración, "pensando", prueba en iPhone). Fuera: INE, Talleres, Intereses, app del familiar (`Fam*`).
+Orden por lo que ve el jurado: 1) Ayuda → "¿Está bien?" ✅ · 2) "Sus pastillas de hoy" ✅ · 3) Mijo pregunta por ti ✅ (falta probar en iPhone) · 4) Registro por voz corto ✅ (Bienvenida → Nombre → Contacto → QR → Permisos → Listo) · 5) Siri ✅ (falta probar en iPhone) · 5) Siri · 6) Pulido (transiciones, vibración, "pensando", prueba en iPhone). Fuera: INE, Talleres, Intereses, app del familiar (`Fam*`).
 - Hecho a las 18:40: `Help/` (HelpModel + HelpView), `Pills/PillsView`, `DesignSystem/TiltedCard`, `Medicina.horarioPorConfirmar()/tomadaHoy()`, `Horario(de:)/fechaDeHoy`. La emergencia salió de `ConversationModel`: ahora la conversación cambia a `HelpView` con `frase`.
-- Commits: `18e8d05` (Ayuda + Pastillas), `4f363fb` (notificaciones). **Sin commit:** #4 registro (`Onboarding/`, `RootView`, `StepDots`, cambios en `MijoHeader`, `Persistence`, `MijoActions`).
+- Commits: `18e8d05` (Ayuda + Pastillas), `4f363fb` (notificaciones), `239b9ac` (registro). **Sin commit:** #5 Siri (`Intents/`, Display Name = Mijo en el .xcodeproj con permiso de Leo, `ContentView` atiende `AppRouter`).
+- Siri: el proyecto está en inglés (`developmentRegion = en`); las frases en español van en `Intents/AppShortcuts.xcstrings` (es y es-419) y sí salen en la app compilada. No se tocó `knownRegions`.
 - #4 (19:40): el registro crea `Ajustes` (tema ntfy corto `mijo-xxxx-xxxx-xxxx`) y un `Familiar` principal con `parentesco` vacío. Arreglado: un parentesco vacío hacía que "llama a X" coincidiera con cualquiera.
 - #3 (19:15): `Models/Persistence` (base de datos única), `AppDelegate` (respuestas a notificaciones), `Services/NotificationService`, `VoiceRecorder` (voz de Mijo → Library/Sounds/*.caf), `FamilyAlerts` (pastilla/comida sin confirmar 30 min → ntfy; solo con la app abierta). Regla única de "Ahora": dosis sin tomar entre −2 h y +1 h (`Medicina.horarioPorConfirmar`).
 - AlarmKit sigue fuera (2.º en el orden de sacrificio).
 
 ## Siguiente paso exacto
-1. Leo prueba en el iPhone (borrar la app primero para ver el registro): registro completo → Inicio → "Recuérdame la pastilla de la presión a las 9 de la noche" → notificación con voz (mantener presionado a Mijo) → Ayuda.
-2. #5 Siri: App Shortcuts "Habla con Mijo" y "Mijo, me caí" (App Intents).
-3. #6 Pulido.
+1. Leo prueba en el iPhone (borrar la app primero): registro → Inicio → "Recuérdame la pastilla de la presión a las 9 de la noche" → notificación con voz (mantener presionado a Mijo) → Ayuda → Siri: "Oye Siri, habla con Mijo", "Oye Siri, Mijo, me caí", "Oye Siri, pregúntale a Mijo si ya me tomé la pastilla". Los atajos pueden tardar unos minutos en aparecer tras instalar.
+2. #6 Pulido: transiciones, vibración, estado "pensando", revisar todo en el iPhone.
+3. Bloque 7: README, Keynote, pitch, video, `./scripts/entregar.sh`.
 
 ## Pendientes del usuario
 - Voz más natural: en el iPhone, Ajustes → Accesibilidad → Contenido leído → Voces → Español (México) → descargar **Juan (Mejorada)** o **Paulina (Premium)**. La app la elige sola.
 - Para el aviso: instalar **ntfy** en otro teléfono y suscribirse al tema que sale en la consola de Xcode.
-- Opcional: en Xcode → General → Display Name = `Mijo` (hoy aparece "hackAthon").
 
 ## Cuidado con
 - Los bloques que el sistema llama desde otros hilos (audio, Speech) van en funciones `nonisolated static` de `VoiceService`: el proyecto usa MainActor por defecto y, si se escriben dentro de un método normal, la app truena al escuchar.

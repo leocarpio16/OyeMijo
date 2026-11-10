@@ -55,7 +55,7 @@ Marca: [ ] pendiente · [x] hecho.
 - **Listo cuando:** el camino completo funciona sin tocar más de 2 veces
 
 ## Bloque 5 · Siri y configuración (martes 10, ~8:00–10:00)
-- [ ] App Shortcuts: "Habla con Mijo", "Mijo, me caí", "Pregúntale a Mijo si ya me tomé la pastilla"
+- [x] App Shortcuts: "Habla con Mijo", "Mijo, me caí", "Pregúntale a Mijo si ya me tomé la pastilla" (frases en español en `Intents/AppShortcuts.xcstrings`; Display Name = Mijo) · **sin probar en iPhone**
 - [ ] Pantalla oculta de configuración (familia), grabar voz del familiar
 - **Listo cuando:** "Oye Siri, habla con Mijo" abre Mijo escuchando en el iPhone
 

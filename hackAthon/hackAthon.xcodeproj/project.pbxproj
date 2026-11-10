@@ -254,6 +254,7 @@
 				DEVELOPMENT_TEAM = R2822V9YZC;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Mijo;
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Mijo usa el micrófono para escucharle.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Mijo convierte su voz en texto para entender qué necesita.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -288,6 +289,7 @@
 				DEVELOPMENT_TEAM = R2822V9YZC;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Mijo;
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Mijo usa el micrófono para escucharle.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Mijo convierte su voz en texto para entender qué necesita.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

@@ -1,0 +1,134 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "Habla con ${applicationName}": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Habla con ${applicationName}"
+          }
+        },
+        "es-419": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Habla con ${applicationName}"
+          }
+        }
+      }
+    },
+    "Hablar con ${applicationName}": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hablar con ${applicationName}"
+          }
+        },
+        "es-419": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hablar con ${applicationName}"
+          }
+        }
+      }
+    },
+    "Oye ${applicationName}": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oye ${applicationName}"
+          }
+        },
+        "es-419": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oye ${applicationName}"
+          }
+        }
+      }
+    },
+    "${applicationName}, me caí": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "${applicationName}, me caí"
+          }
+        },
+        "es-419": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "${applicationName}, me caí"
+          }
+        }
+      }
+    },
+    "Me caí, ${applicationName}": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Me caí, ${applicationName}"
+          }
+        },
+        "es-419": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Me caí, ${applicationName}"
+          }
+        }
+      }
+    },
+    "${applicationName}, ayuda": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "${applicationName}, ayuda"
+          }
+        },
+        "es-419": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "${applicationName}, ayuda"
+          }
+        }
+      }
+    },
+    "Pregúntale a ${applicationName} si ya me tomé la pastilla": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pregúntale a ${applicationName} si ya me tomé la pastilla"
+          }
+        },
+        "es-419": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pregúntale a ${applicationName} si ya me tomé la pastilla"
+          }
+        }
+      }
+    },
+    "${applicationName}, ¿ya me tomé la pastilla?": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "${applicationName}, ¿ya me tomé la pastilla?"
+          }
+        },
+        "es-419": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "${applicationName}, ¿ya me tomé la pastilla?"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}
