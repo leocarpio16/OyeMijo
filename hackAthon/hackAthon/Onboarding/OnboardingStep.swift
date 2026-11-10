@@ -94,12 +94,23 @@ struct OnboardingHero: View {
     let action: () -> Void
     /// Mantener presionado a Mijo (solo Bienvenida: cargar datos de ejemplo).
     var onLongPress: (() -> Void)?
+    /// Pastilla "Soy familiar" arriba a la derecha (solo Bienvenida).
+    var onFamiliar: (() -> Void)?
 
     var body: some View {
         GeometryReader { geo in
             VStack(spacing: 0) {
                 MijoHeader(height: height, mijoSize: mijoSize)
                     .onLongPressGesture { onLongPress?() }
+                    .overlay(alignment: .topTrailing) {
+                        if let onFamiliar {
+                            WhitePill(title: "Soy familiar", systemImage: "person.2",
+                                      font: Theme.Typography.helpPill, height: Theme.Size.helpPill,
+                                      fullWidth: false, shadowOpacity: 0.14, action: onFamiliar)
+                                .padding(.top, geo.safeAreaInsets.top + Theme.Spacing.xs)
+                                .padding(.trailing, Theme.Spacing.screen - Theme.Spacing.xs)
+                        }
+                    }
 
                 VStack(spacing: Theme.Spacing.s + 2) {
                     Text(titulo)
