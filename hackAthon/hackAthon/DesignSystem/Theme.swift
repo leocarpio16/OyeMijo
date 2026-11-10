@@ -38,6 +38,12 @@ enum Theme {
         static let cardBack = Color(hex: 0xFEEBC1)
         /// Brillo naranja debajo del botón ámbar del micrófono.
         static let amberGlow = Color(hex: 0xF59D1D)
+        /// Arriba del degradado de "¿Está bien?" (rosa que baja a crema).
+        static let helpGlow = Color(hex: 0xFDDDD5)
+        /// Verde de "Tomada" (6.4:1 sobre blanco).
+        static let taken = Color(hex: 0x1B6E31)
+        /// Fondo del anillo de la cuenta regresiva.
+        static let helpTrack = Color(hex: 0xF8DCD5)
     }
 
     // MARK: Tipografía
@@ -74,6 +80,17 @@ enum Theme {
         static let quoteSize: CGFloat = 34   // lo que dijo la persona
         static let titleSize: CGFloat = 40   // "Mijo le contesta"
         static let answerSize: CGFloat = 36  // la respuesta de Mijo
+        static let countdownSize: CGFloat = 66 // segundos de la cuenta regresiva
+        /// "Posible caída" en la pastilla roja de arriba.
+        static let alertPill = avenir("Bold", 20, .title3)
+        /// Botón de texto "Llamar al 911".
+        static let textButton = avenir("Bold", 22, .title2)
+        /// Estado de cada pastilla: "Tomada", "Ahora".
+        static let status = avenir("Bold", 22, .title2)
+        static let statusSoft = avenir("DemiBold", 22, .title2)
+        /// Renglones de la ficha médica.
+        static let cardRow = avenir("Regular", 20, .title3)
+        static let cardRowBold = avenir("DemiBold", 20, .title3)
     }
 
     // MARK: Espaciado
@@ -119,26 +136,37 @@ enum Theme {
         static let chip: CGFloat = 46
         /// Barras que se mueven mientras Mijo escucha.
         static let waveBar: CGFloat = 6
+        /// Anillo de la cuenta regresiva y su grosor.
+        static let countdown: CGFloat = 180
+        static let countdownStroke: CGFloat = 12
+        /// Renglón de cada pastilla en "Sus pastillas de hoy".
+        static let pillRow: CGFloat = 64
+        /// Etiqueta ámbar "Ahora".
+        static let nowTag: CGFloat = 44
+        /// Botón de solo texto ("Llamar al 911").
+        static let textButton: CGFloat = 52
     }
 }
 
 /// Letra con serifa (New York) que crece con Dynamic Type, igual que el resto.
 private struct SerifFont: ViewModifier {
     @ScaledMetric private var size: CGFloat
+    let weight: Font.Weight
 
-    init(size: CGFloat) {
+    init(size: CGFloat, weight: Font.Weight) {
         _size = ScaledMetric(wrappedValue: size, relativeTo: .largeTitle)
+        self.weight = weight
     }
 
     func body(content: Content) -> some View {
-        content.font(.system(size: size, weight: .medium, design: .serif))
+        content.font(.system(size: size, weight: weight, design: .serif))
     }
 }
 
 extension View {
     /// `.serif(Theme.Typography.answerSize)`
-    func serif(_ size: CGFloat) -> some View {
-        modifier(SerifFont(size: size))
+    func serif(_ size: CGFloat, weight: Font.Weight = .medium) -> some View {
+        modifier(SerifFont(size: size, weight: weight))
     }
 }
 

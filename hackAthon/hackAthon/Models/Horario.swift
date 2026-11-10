@@ -12,6 +12,22 @@ nonisolated struct Horario: Codable, Hashable, Comparable {
     var hora: Int    // 0–23
     var minuto: Int  // 0–59
 
+    init(hora: Int, minuto: Int) {
+        self.hora = hora
+        self.minuto = minuto
+    }
+
+    /// La hora de una fecha: 21:05 del lunes → Horario(21, 5).
+    init(de fecha: Date) {
+        let partes = Calendar.current.dateComponents([.hour, .minute], from: fecha)
+        self.init(hora: partes.hour ?? 0, minuto: partes.minute ?? 0)
+    }
+
+    /// Hoy a esta hora.
+    var fechaDeHoy: Date {
+        Calendar.current.date(bySettingHour: hora, minute: minuto, second: 0, of: .now) ?? .now
+    }
+
     /// Minutos desde la medianoche; sirve para ordenar y comparar.
     var minutosDelDia: Int { hora * 60 + minuto }
 
@@ -21,7 +37,6 @@ nonisolated struct Horario: Codable, Hashable, Comparable {
 
     /// Texto para mostrar, siempre en español de México: "9:00 p.m.".
     var texto: String {
-        let fecha = Calendar.current.date(bySettingHour: hora, minute: minuto, second: 0, of: .now) ?? .now
-        return fecha.formatted(.dateTime.hour().minute().locale(Locale(identifier: "es_MX")))
+        fechaDeHoy.formatted(.dateTime.hour().minute().locale(Locale(identifier: "es_MX")))
     }
 }

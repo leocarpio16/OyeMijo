@@ -18,7 +18,15 @@ struct ContentView: View {
     @Query private var ajustes: [Ajustes]
     @Query private var medicinas: [Medicina]
     @Environment(\.modelContext) private var context
-    @State private var hablandoConMijo = false
+    @State private var pantalla: Pantalla?
+
+    /// Pantallas que se abren encima de Inicio.
+    private enum Pantalla: Identifiable {
+        case conversacion
+        case ayuda
+        case pastillas
+        var id: Self { self }
+    }
 
     var body: some View {
         GeometryReader { geo in
@@ -29,7 +37,7 @@ struct ContentView: View {
                                   color: Theme.Palette.help, iconColor: Theme.Palette.help,
                                   font: Theme.Typography.helpPill, height: Theme.Size.helpPill,
                                   fullWidth: false, shadowOpacity: 0.14) {
-                            // Bloque 4: protocolo de caída / emergencia (sin IA).
+                            pantalla = .ayuda
                         }
                         .padding(.top, geo.safeAreaInsets.top + Theme.Spacing.xs)
                         .padding(.trailing, Theme.Spacing.screen - Theme.Spacing.xs)
@@ -48,7 +56,7 @@ struct ContentView: View {
 
                 if let texto = proximaMedicina {
                     WhitePill(title: texto, systemImage: "clock") {
-                        // Bloque 2: pantalla de medicinas.
+                        pantalla = .pastillas
                     }
                     .padding(.horizontal, Theme.Spacing.screen)
                     .padding(.top, Theme.Spacing.l + 2)
@@ -57,15 +65,20 @@ struct ContentView: View {
                 Spacer(minLength: Theme.Spacing.l)
 
                 TalkButton {
-                    hablandoConMijo = true
+                    pantalla = .conversacion
                 }
                 .padding(.bottom, geo.safeAreaInsets.bottom + Theme.Spacing.s)
             }
             .ignoresSafeArea()
         }
         .background(Theme.Palette.cream)
-        .fullScreenCover(isPresented: $hablandoConMijo) {
-            ConversationView(context: context, nombre: ajustes.first?.comoLlamarla ?? "")
+        .fullScreenCover(item: $pantalla) { pantalla in
+            let nombre = ajustes.first?.comoLlamarla ?? ""
+            switch pantalla {
+            case .conversacion: ConversationView(context: context, nombre: nombre)
+            case .ayuda: HelpView(context: context, nombre: nombre, motivo: .ayuda)
+            case .pastillas: PillsView { self.pantalla = .conversacion }
+            }
         }
     }
 
@@ -77,10 +90,12 @@ struct ContentView: View {
 
     /// "9:00 p.m. · Pastilla de la presión" (la siguiente de hoy o, si ya pasaron, la primera de mañana).
     private var proximaMedicina: String? {
-        let hoy = medicinas.compactMap { med in med.siguienteHorario().map { (med, $0) } }
+        let hoy = medicinas.compactMap { med in
+            (med.horarioPorConfirmar() ?? med.siguienteHorario()).map { (med, $0) }
+        }
         let manana = medicinas.compactMap { med in med.horarios.min().map { (med, $0) } }
         guard let (med, horario) = (hoy.isEmpty ? manana : hoy).min(by: { $0.1 < $1.1 }) else { return nil }
-        return "\(horario.texto) · Pastilla de \(med.paraQue)"
+        return "\(horario.texto) · \(med.nombreParaMostrar)"
     }
 }
 

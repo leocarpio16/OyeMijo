@@ -11,10 +11,12 @@ import SwiftData
 
 struct ConversationView: View {
     @State private var modelo: ConversationModel
+    private let context: ModelContext
     @Environment(\.dismiss) private var dismiss
 
     init(context: ModelContext, nombre: String) {
         _modelo = State(initialValue: ConversationModel(context: context, nombre: nombre))
+        self.context = context
     }
 
     var body: some View {
@@ -34,6 +36,9 @@ struct ConversationView: View {
                            onRepeat: modelo.repetir,
                            onAction: ejecutar,
                            onTalk: { Task { await modelo.escuchar() } })
+            case .emergencia(let motivo):
+                // Protocolo fijo, sin IA: avisa a la familia y marca de una vez.
+                HelpView(context: context, nombre: modelo.nombre, motivo: motivo, frase: modelo.frase)
             }
         }
         .task { await modelo.escuchar() }

@@ -34,6 +34,7 @@ Marca: [ ] pendiente · [x] hecho.
 - Diseño: pantallas A–H de "Oye Mijito – Pantallas", minimalista
 
 ## Bloque 2 · Notificaciones con voz y medicinas (lunes, ~17:30–19:30)
+- [x] Pantalla "Sus pastillas de hoy" (diseño `Pastillas`): Tomada / Ahora / Sin confirmar / Después, "Ya me la tomé", "Escuchar". Se abre desde la pastilla de Inicio
 - [ ] Generar audio de la frase (voz de Mijo) en Library/Sounds y usarlo como sonido
 - [ ] Categorías con botones: [Sí] [Todavía no] / [Ya me la tomé] [Más tarde]
 - [ ] Respuestas registradas sin abrir la app; reintento a los 30 min
@@ -47,7 +48,7 @@ Marca: [ ] pendiente · [x] hecho.
 - **Listo cuando:** el aviso llega a otro teléfono
 
 ## Bloque 4 · Caídas (lunes, ~20:30–22:00)
-- [ ] Protocolo fijo con voz y botones gigantes de respaldo
+- [x] Protocolo fijo con voz y botones gigantes de respaldo: pantalla "¿Está bien?" (diseño `Ayuda`), cuenta de 30 s, escucha "estoy bien"/"no"/"ayuda", ntfy urgente + llamada automática, ficha médica. Botón Ayuda de Inicio y "me caí" por voz llegan aquí
 - [ ] Rama "me duele": ntfy + pantalla de emergencia + dirección en voz (CoreLocation) + ficha médica
 - [ ] Rama "no me duele": pasos para levantarse
 - **Listo cuando:** el camino completo funciona sin tocar más de 2 veces
@@ -69,7 +70,7 @@ Marca: [ ] pendiente · [x] hecho.
 - [ ] Guion de pitch 5 min + 8 preguntas del jurado
 - [ ] Video de respaldo de la demo
 - [ ] Revisar secretos, `git status` limpio
-- [ ] Copiar a `Datisa/Codigo` y `Datisa/Documentacion`, push **antes de las 14:30**
+- [ ] Entrega final: `./scripts/entregar.sh` (copia a `Datisa/Codigo` y `Datisa/Documentacion` y sube) **antes de las 14:30** · 1.ª copia subida el 9 nov
 
 ## Orden de sacrificio si hay retraso
 1. Deseables → 2. AlarmKit → 3. Grabación de voz del familiar → 4. Rama "no me duele" detallada → 5. Herramientas extra del agente → 6. Pasos opcionales del registro por voz (QR de familia y primera medicina; nombre y persona de confianza se quedan).

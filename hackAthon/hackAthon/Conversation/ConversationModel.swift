@@ -16,6 +16,8 @@ enum FaseDeConversacion {
     case escuchando
     case pensando
     case respondiendo(RespuestaDeMijo)
+    /// Dijo "me caí", "me siento mal"…: se pasa a la pantalla de ayuda.
+    case emergencia(Emergencia)
 }
 
 @Observable
@@ -63,7 +65,7 @@ final class ConversationModel {
         fase = .pensando
         // Primero el filtro de emergencias, sin IA; lo demás va con el agente.
         if let emergencia = EmergencyRouter.detectar(frase) {
-            mostrar(await atenderEmergencia(emergencia))
+            fase = .emergencia(emergencia)
         } else {
             mostrar(await agente.responder(a: frase))
         }
@@ -107,34 +109,5 @@ final class ConversationModel {
                 llamar(familiar)
             }
         }
-    }
-
-    /// Emergencia (sin IA): avisa a la familia por ntfy y le marca al familiar principal.
-    /// El protocolo completo (¿le duele?, dirección, ficha médica) es el Bloque 4.
-    private func atenderEmergencia(_ emergencia: Emergencia) async -> RespuestaDeMijo {
-        let familiar = acciones.familiarPrincipal()
-        var avisado = false
-        if let datos = acciones.datosParaAvisar() {
-            let titulo = switch emergencia {
-            case .caida: "\(datos.nombre) se cayó"
-            case .malestar: "\(datos.nombre) se siente mal"
-            case .ayuda: "\(datos.nombre) pidió ayuda"
-            }
-            var mensaje = "Le dijo a Mijo: “\(frase)”."
-            if let familiar { mensaje += " Mijo le está marcando a \(familiar.nombre)." }
-            avisado = await NtfyService.avisar(tema: datos.tema, titulo: titulo, mensaje: mensaje,
-                                               prioridad: .urgente, etiquetas: ["rotating_light"])
-        }
-
-        guard let familiar else {
-            return RespuestaDeMijo(texto: "Aquí estoy con usted. Si es urgente, llame al 911.")
-        }
-        let texto = avisado
-            ? "Aquí estoy con usted. Ya le avisé a su familia y ahorita le marco a \(familiar.nombre)."
-            : "Aquí estoy con usted. Ahorita le marco a \(familiar.nombre)."
-        return RespuestaDeMijo(texto: texto,
-                               detalle: avisado ? "Su familia ya recibió el aviso" : nil,
-                               etiquetas: [familiar.nombre, "Su \(familiar.parentesco)"],
-                               accion: .llamar(familiar))
     }
 }

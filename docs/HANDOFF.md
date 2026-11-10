@@ -1,9 +1,10 @@
-# HANDOFF · lunes 9 nov 2026, ~18:00
+# HANDOFF · lunes 9 nov 2026, ~18:40
 
 ## Dónde estamos
 - **Bloque 1 · Voz: ~90 %.** Leo agregó los permisos y probó en su iPhone; se arreglaron los 3 problemas que encontró (ver abajo). Falta su 2.ª prueba.
 - Último commit: `e91b844` (plan F6). **Cambios sin commit:** todo el Bloque 1 (`Services/`, `Conversation/`, componentes de `DesignSystem/`, `ContentView`, `Theme`, `hackAthonApp`, `.xcodeproj` con los 2 permisos, ROADMAP, HANDOFF).
-- Push hecho: GitHub tiene hasta `149c2af`. Siguientes pushes: `! git push`.
+- GitHub OyeMijo: hasta `149c2af` (falta `! git push` para `f33ad9e`, el script de entrega).
+- **Entregables del evento:** `Datisa/` ya subido (commit `7093400` en 424144407-enviar-it/HACKATHON-ENTREGABLES). Copia local en `~/Desktop/HACKATHON-ENTREGABLES` (solo `Datisa/`). Para actualizar: `! ./scripts/entregar.sh` (sube lo que tenga commit en Mijo; la Keynote va a mano en `Datisa/Documentacion/`).
 - ¿Compila? Sí, sin avisos.
 
 ## Decisiones vigentes (no re-discutir)
@@ -37,10 +38,14 @@
 - "Llama a Leo" también marca solo. Nueva herramienta `marcarMedicinaTomada` ("ya me tomé la de la presión").
 - El tema de ntfy se imprime en la consola de Xcode al abrir: `🔔 Tema de ntfy de la familia: mijo-…`.
 
+## Plan nuevo (18:30, aprobado por Leo: "la veo muy inmadura")
+Orden por lo que ve el jurado: 1) Ayuda → "¿Está bien?" ✅ · 2) "Sus pastillas de hoy" ✅ · 3) Mijo pregunta por ti (notificación con voz + botones) · 4) Registro por voz corto (Nombre → Contacto → QR → Listo) · 5) Siri · 6) Pulido (transiciones, vibración, "pensando", prueba en iPhone). Fuera: INE, Talleres, Intereses, app del familiar (`Fam*`).
+- Hecho a las 18:40: `Help/` (HelpModel + HelpView), `Pills/PillsView`, `DesignSystem/TiltedCard`, `Medicina.horarioPorConfirmar()/tomadaHoy()`, `Horario(de:)/fechaDeHoy`. La emergencia salió de `ConversationModel`: ahora la conversación cambia a `HelpView` con `frase`.
+- **Sin commit** desde `f33ad9e` (CLAUDE.md: commit solo cuando Leo lo pida).
+
 ## Siguiente paso exacto
-1. 2.ª prueba de Leo en el iPhone: "Ok", "¿A qué hora me toca la pastilla de la presión?", "Recuérdame la del azúcar a las 9 de la noche", "Ya me tomé la de la presión", "Llama a Leo", "Me caí" (con ntfy suscrito en otro teléfono).
-2. Arreglar lo que salga. Commit del Bloque 1.
-3. Bloque 1b: registro por voz con las pantallas A–H del diseño (leer `Nombre`, `Contacto`, `Conectar`, `Medicina`, `Permisos`, `Listo`).
+1. #3 Mijo pregunta por ti: notificaciones locales a la hora de cada pastilla y comida, con categorías [Sí]/[Todavía no] y [Ya me la tomé]/[Más tarde]; respuesta registrada sin abrir la app; sonido = voz de Mijo grabada a archivo (AVSpeechSynthesizer.write) en Library/Sounds; si no confirma en 30 min → ntfy a la familia.
+2. Luego #4 registro por voz corto.
 
 ## Pendientes del usuario
 - Voz más natural: en el iPhone, Ajustes → Accesibilidad → Contenido leído → Voces → Español (México) → descargar **Juan (Mejorada)** o **Paulina (Premium)**. La app la elige sola.

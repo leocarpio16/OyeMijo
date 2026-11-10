@@ -28,7 +28,9 @@ struct AnswerView: View {
                           height: Theme.Size.roundButton, fullWidth: false,
                           shadowOpacity: 0.12, action: onRepeat)
             }
+            .padding(.horizontal, margen)
 
+            // El margen va dentro del scroll para que la tarjeta inclinada y su sombra no se corten.
             ScrollView {
                 VStack(spacing: Theme.Spacing.section) {
                     VStack(spacing: Theme.Spacing.s) {
@@ -45,10 +47,8 @@ struct AnswerView: View {
                     .multilineTextAlignment(.center)
 
                     card
-                        .padding(.horizontal, Theme.Spacing.xs)
-                        .padding(.top, Theme.Spacing.xs + 2)
-                        .padding(.bottom, Theme.Spacing.xl)
                 }
+                .padding(.horizontal, margen)
             }
             .scrollBounceBehavior(.basedOnSize)
             .scrollIndicators(.hidden)
@@ -69,8 +69,8 @@ struct AnswerView: View {
                                 iconColor: Theme.Palette.brandBrown,
                                 shadow: Theme.Palette.amberGlow.opacity(0.4), action: onTalk)
             }
+            .padding(.horizontal, margen)
         }
-        .padding(.horizontal, Theme.Spacing.screen - Theme.Spacing.xs)
         .padding(.top, Theme.Spacing.xs)
         .padding(.bottom, Theme.Spacing.s)
         .background {
@@ -81,9 +81,10 @@ struct AnswerView: View {
         }
     }
 
-    /// Tarjeta blanca inclinada, con otra color crema asomándose atrás.
+    private let margen = Theme.Spacing.screen - Theme.Spacing.xs
+
     private var card: some View {
-        VStack(spacing: Theme.Spacing.l) {
+        TiltedCard {
             HStack(spacing: Theme.Spacing.m) {
                 MijoAvatar(size: Theme.Size.cardAvatar)
                 VStack(alignment: .leading, spacing: 0) {
@@ -117,18 +118,6 @@ struct AnswerView: View {
                     VStack(spacing: Theme.Spacing.s) { chips }
                 }
             }
-        }
-        .padding(Theme.Spacing.section)
-        .frame(maxWidth: .infinity)
-        .background(Theme.Palette.surface, in: .rect(cornerRadius: Theme.Radius.card))
-        .shadow(color: Theme.Palette.shadow.opacity(0.10), radius: 20, y: 18)
-        .rotationEffect(.degrees(-1.2))
-        .background {
-            RoundedRectangle(cornerRadius: Theme.Radius.card)
-                .fill(Theme.Palette.cardBack)
-                .padding(.horizontal, Theme.Spacing.l + 2)
-                .offset(y: Theme.Spacing.m + 2)
-                .rotationEffect(.degrees(3.5))
         }
     }
 

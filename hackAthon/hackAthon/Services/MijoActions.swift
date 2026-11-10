@@ -77,6 +77,11 @@ final class MijoActions {
         return (ajustes.temaNtfy, ajustes.comoLlamarla)
     }
 
+    /// Datos para quien llegue a ayudar (familia, paramédicos).
+    func fichaMedica() -> FichaMedica? {
+        try? context.fetch(FetchDescriptor<FichaMedica>()).first
+    }
+
     // MARK: Medicinas
 
     func crearRecordatorio(paraQue: String, hora: Int, minuto: Int) -> String {
@@ -123,8 +128,11 @@ final class MijoActions {
         return "Anotado: ya se tomó la pastilla de \(medicina.paraQue)."
     }
 
+    /// Anota la toma que toca ahora (o, si no hay, la de esta hora).
     func marcarTomada(_ medicina: Medicina) {
-        context.insert(Toma(medicina: medicina, programada: .now, estado: .tomada, respondida: .now))
+        let horario = medicina.horarioPorConfirmar() ?? Horario(de: .now)
+        context.insert(Toma(medicina: medicina, programada: horario.fechaDeHoy,
+                            estado: .tomada, respondida: .now))
         try? context.save()
     }
 

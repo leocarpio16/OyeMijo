@@ -2,7 +2,8 @@
 //  PrimaryButton.swift
 //  hackAthon
 //
-//  Botón café grande, de lado a lado: "Ya terminé", "Ya me la tomé".
+//  Botón grande, de lado a lado: café ("Ya terminé", "Ya me la tomé")
+//  o rojo solo para emergencias ("Necesito ayuda").
 //
 
 import SwiftUI
@@ -10,6 +11,7 @@ import SwiftUI
 struct PrimaryButton: View {
     let title: String
     var systemImage: String?
+    var color: Color = Theme.Palette.brandBrown
     let action: () -> Void
 
     var body: some View {
@@ -27,7 +29,7 @@ struct PrimaryButton: View {
             .foregroundStyle(Theme.Palette.surface)
             .padding(.horizontal, Theme.Spacing.l)
             .frame(maxWidth: .infinity, minHeight: Theme.Size.actionButton)
-            .background(Theme.Palette.brandBrown, in: .capsule)
+            .background(color, in: .capsule)
         }
         .buttonStyle(.plain)
     }
@@ -37,6 +39,8 @@ struct PrimaryButton: View {
     VStack(spacing: 16) {
         PrimaryButton(title: "Ya terminé") {}
         PrimaryButton(title: "Ya me la tomé", systemImage: "checkmark") {}
+        PrimaryButton(title: "Necesito ayuda", systemImage: "exclamationmark.triangle",
+                      color: Theme.Palette.help) {}
     }
     .padding(20)
     .background(Theme.Palette.cream)
