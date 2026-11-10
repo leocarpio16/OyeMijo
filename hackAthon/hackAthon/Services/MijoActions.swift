@@ -248,7 +248,8 @@ final class MijoActions {
 
     // MARK: Medicinas
 
-    func crearRecordatorio(paraQue: String, hora: Int, minuto: Int) -> String {
+    /// `nombre` y `dosis` llegan desde la pantalla "Agregar pastilla"; por voz van vacíos.
+    func crearRecordatorio(paraQue: String, hora: Int, minuto: Int, nombre: String = "", dosis: String = "") -> String {
         guard (0...23).contains(hora), (0...59).contains(minuto) else {
             frase = "No entendí la hora. ¿A qué hora le recuerdo su pastilla?"
             return "La hora no es válida. Pregúntale a qué hora la quiere."
@@ -264,8 +265,11 @@ final class MijoActions {
         if let existente = sinNombre ? unicaMedicina() : buscarMedicina(paraQue) {
             medicina = existente
             if !medicina.horarios.contains(horario) { medicina.horarios.append(horario) }
+            if !nombre.isEmpty { medicina.nombre = nombre }
+            if !dosis.isEmpty { medicina.dosis = dosis }
         } else {
-            medicina = Medicina(nombre: "Pastilla", dosis: "", paraQue: paraQue, horarios: [horario])
+            medicina = Medicina(nombre: nombre.isEmpty ? "Pastilla" : nombre, dosis: dosis,
+                                paraQue: paraQue, horarios: [horario])
             context.insert(medicina)
         }
         try? context.save()

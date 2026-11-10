@@ -27,6 +27,8 @@ struct ContentView: View {
         case pastillas
         /// "Oye Siri, Mijo, me caí": avisa y marca sin preguntar.
         case caida
+        /// Código para conectar a la familia (mantener presionado el nombre).
+        case codigo
         var id: Self { self }
     }
 
@@ -57,6 +59,11 @@ struct ContentView: View {
                     Text(ajustes.first?.comoLlamarla ?? "")
                         .font(Theme.Typography.name)
                         .foregroundStyle(Theme.Palette.cafe)
+                        // Para la familia: mantener presionado el nombre muestra el código de Mijo.
+                        .onLongPressGesture {
+                            Haptics.tap()
+                            pantalla = .codigo
+                        }
                 }
                 .multilineTextAlignment(.center)
                 .padding(.top, Theme.Spacing.l + 2)
@@ -80,6 +87,10 @@ struct ContentView: View {
             .ignoresSafeArea()
         }
         .background(Theme.Palette.cream)
+        .task {
+            // Si la persona grabó su Voz personal, Mijo pide permiso para hablar con ella.
+            await VoiceService.pedirVozPersonal()
+        }
         .task {
             // Mijo pregunta por ti: programa las preguntas de pastillas y comidas.
             if await NotificationService.pedirPermiso() {
@@ -106,6 +117,7 @@ struct ContentView: View {
             case .ayuda: HelpView(context: context, nombre: nombre, motivo: .ayuda)
             case .pastillas: PillsView { self.pantalla = .conversacion }
             case .caida: HelpView(context: context, nombre: nombre, motivo: .caida, frase: "me caí")
+            case .codigo: CodigoFamiliaView(tema: ajustes.first?.temaNtfy ?? "")
             }
         }
     }

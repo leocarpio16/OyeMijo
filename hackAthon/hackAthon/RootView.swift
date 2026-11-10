@@ -12,14 +12,16 @@ import SwiftData
 
 struct RootView: View {
     @Query private var ajustes: [Ajustes]
-    /// Tema de ntfy que escucha este teléfono en modo familia; vacío = modo abuela.
+    /// true si este teléfono es el de un familiar ("Soy familiar" en Bienvenida).
     /// Va en UserDefaults (como un archivo de configuración), no en la base de datos.
+    /// nil = nunca se eligió (la versión anterior solo guardaba el código: si lo hay, es familia).
+    @AppStorage("modoFamilia") private var modoFamilia: Bool?
     @AppStorage("temaFamilia") private var temaFamilia = ""
 
     var body: some View {
         Group {
-            if !temaFamilia.isEmpty {
-                FamilyView(tema: temaFamilia) { temaFamilia = "" }
+            if modoFamilia ?? !temaFamilia.isEmpty {
+                FamilyRoot()
                     .transition(.opacity)
             } else if ajustes.isEmpty {
                 OnboardingView()
@@ -30,7 +32,7 @@ struct RootView: View {
             }
         }
         .animation(.easeInOut(duration: 0.35), value: ajustes.isEmpty)
-        .animation(.easeInOut(duration: 0.35), value: temaFamilia)
+        .animation(.easeInOut(duration: 0.35), value: modoFamilia)
     }
 }
 

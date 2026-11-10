@@ -11,6 +11,7 @@
 //     ntfy con su dirección, Mijo se la dice en voz y le marca al familiar principal.
 //  Si dijo "me siento mal" hablando con Mijo, se salta la pregunta.
 //  4. Cuando logra levantarse, la familia recibe un segundo aviso: "ya se levantó".
+//  5. "Cancelar, fue un error": se cierra; si la familia ya tenía aviso, le llega "falsa alarma".
 //
 
 import Foundation
@@ -79,6 +80,9 @@ final class HelpModel {
     @ObservationIgnored private var saltar = false
     /// Para el aviso: no se pudo levantar después de los pasos.
     @ObservationIgnored private var noSePudoLevantar = false
+    /// El aviso de la caída sin dolor (va en paralelo a los pasos). Al cancelar se espera
+    /// a que salga, para que "falsa alarma" no llegue antes que el aviso.
+    @ObservationIgnored private var avisoDeCaida: Task<Void, Never>?
     /// El GPS se empieza a leer desde que abre la pantalla, para tenerlo listo al avisar.
     @ObservationIgnored private var buscandoUbicacion: Task<Ubicacion?, Never>?
 
@@ -199,7 +203,7 @@ final class HelpModel {
         voz.terminarDeEscuchar()
         fase = .levantandose(paso: 0)
         Haptics.success()
-        Task {
+        avisoDeCaida = Task {
             // El aviso va en paralelo: Mijo no se queda callado esperando el internet.
             guard let datos = acciones.datosParaAvisar() else { return }
             let ubicacion = await esperarUbicacion()
@@ -317,6 +321,34 @@ final class HelpModel {
             if !cerrada { llamar(familiar) }
         } else {
             await voz.hablar("Aquí estoy con usted. \(aviso) \(donde) Si es urgente, toque Llamar al 911.")
+        }
+    }
+
+    // MARK: Cancelar
+
+    /// true si a la familia ya le llegó (o le está llegando) un aviso de esta emergencia.
+    var familiaYaSabe: Bool {
+        switch fase {
+        case .levantandose: true
+        case .avisado(let enviado): enviado
+        default: false
+        }
+    }
+
+    /// "Fue un error": se cierra la pantalla y, si la familia ya sabía, se le avisa que está bien.
+    func cancelar() {
+        let avisar = familiaYaSabe
+        let avisoPendiente = avisoDeCaida
+        voz.terminarDeEscuchar()
+        voz.callar()
+        Haptics.success()
+        fase = .bien // detiene la cuenta y los pasos, y cierra la pantalla
+        guard avisar, let datos = acciones.datosParaAvisar() else { return }
+        Task {
+            await avisoPendiente?.value
+            await NtfyService.avisar(tema: datos.tema, titulo: "Falsa alarma",
+                                     mensaje: "\(datos.nombre) canceló el aviso: dice que está bien.",
+                                     prioridad: .normal, etiquetas: ["white_check_mark"])
         }
     }
 

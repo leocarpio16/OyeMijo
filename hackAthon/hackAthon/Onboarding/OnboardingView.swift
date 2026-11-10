@@ -12,8 +12,7 @@ import SwiftData
 struct OnboardingView: View {
     @State private var modelo = OnboardingModel()
     @State private var eligiendoContacto = false
-    @State private var soyFamiliar = false
-    @AppStorage("temaFamilia") private var temaFamilia = ""
+    @AppStorage("modoFamilia") private var modoFamilia = false
     @Environment(\.modelContext) private var context
 
     var body: some View {
@@ -24,13 +23,10 @@ struct OnboardingView: View {
                                texto: "Soy su nieto en el teléfono. Solo hábleme y yo le ayudo.",
                                boton: "Empezar", action: modelo.siguiente,
                                onLongPress: cargarEjemplo,
-                               onFamiliar: { soyFamiliar = true })
-                .fullScreenCover(isPresented: $soyFamiliar) {
-                    FamilySetupView { tema in
-                        modelo.voz.callar()
-                        temaFamilia = tema
-                    }
-                }
+                               onFamiliar: {
+                                   modelo.voz.callar()
+                                   modoFamilia = true
+                               })
             case .nombre: pasoNombre
             case .contacto: pasoContacto
             case .conectar: pasoConectar

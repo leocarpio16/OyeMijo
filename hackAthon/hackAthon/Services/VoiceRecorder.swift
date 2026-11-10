@@ -15,10 +15,12 @@ enum VoiceRecorder {
     /// Sonido con la voz de Mijo; si no se puede grabar, el sonido normal.
     static func sonido(para texto: String) async -> UNNotificationSound {
         guard let carpeta = carpetaDeSonidos() else { return .default }
-        let nombre = "mijo-\(huella(texto)).caf"
+        let frase = VoiceService.frase(texto, vozPersonal: false)
+        // La voz va en el nombre: si descarga una voz mejor, los audios se vuelven a grabar con ella.
+        let nombre = "mijo-\(huella(texto + (frase.voice?.identifier ?? ""))).caf"
         let archivo = carpeta.appending(path: nombre)
         if !FileManager.default.fileExists(atPath: archivo.path()) {
-            let grabado = await grabar(VoiceService.frase(texto), en: archivo, con: AVSpeechSynthesizer())
+            let grabado = await grabar(frase, en: archivo, con: AVSpeechSynthesizer())
             guard grabado else { return .default }
         }
         return UNNotificationSound(named: UNNotificationSoundName(nombre))

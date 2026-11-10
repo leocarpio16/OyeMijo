@@ -4,6 +4,7 @@
 //
 //  "Sus pastillas de hoy", según el diseño del equipo: cada toma del día
 //  con su estado (Tomada / Ahora / Después) y "Ya me la tomé" abajo.
+//  "Agregar pastilla" abre AddPillView (decirla o escribirla ahí mismo).
 //
 
 import SwiftUI
@@ -14,6 +15,7 @@ struct PillsView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @State private var voz = VoiceService()
+    @State private var agregando = false
     /// Para pasar a la plática con Mijo desde el micrófono.
     let onTalk: () -> Void
 
@@ -54,15 +56,13 @@ struct PillsView: View {
                     .multilineTextAlignment(.center)
 
                     if dosis.isEmpty {
-                        // Recién registrada: se le dice cómo agregar su primera pastilla.
-                        WhiteCard(spacing: Theme.Spacing.s) {
-                            Text("Dígale a Mijo:")
+                        // Recién registrada: el botón para agregar su primera pastilla.
+                        WhiteCard(spacing: Theme.Spacing.l) {
+                            Text("Agregue su primera pastilla. Puede decírmela o escribirla.")
                                 .font(Theme.Typography.support)
                                 .foregroundStyle(Theme.Palette.cafeSoft)
-                            Text("“Recuérdame mi pastilla de la presión a las 9 de la noche”")
-                                .display(Theme.Typography.quoteSize)
-                                .foregroundStyle(Theme.Palette.cafe)
                                 .multilineTextAlignment(.center)
+                            PrimaryButton(title: "Agregar pastilla", systemImage: "plus") { agregando = true }
                         }
                     } else {
                         WhiteCard(spacing: 0) {
@@ -73,6 +73,7 @@ struct PillsView: View {
                                 }
                             }
                         }
+                        WhitePill(title: "Agregar otra pastilla", systemImage: "plus") { agregando = true }
                     }
                 }
                 .padding(.horizontal, margen)
@@ -102,6 +103,7 @@ struct PillsView: View {
                 .ignoresSafeArea()
         }
         .onDisappear { voz.callar() }
+        .fullScreenCover(isPresented: $agregando) { AddPillView() }
     }
 
     private let margen = Theme.Spacing.screen - Theme.Spacing.xs

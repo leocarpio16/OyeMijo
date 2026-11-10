@@ -193,9 +193,9 @@ enum Theme {
         /// Barra de avance de los pasos y de la cuenta regresiva.
         static let progressBar: CGFloat = 6
         /// Escena de la pantalla de caída: alto total, hoja grande y sol.
-        static let scene: CGFloat = 250
-        static let leaf: CGFloat = 96
-        static let sun: CGFloat = 64
+        static let scene: CGFloat = 190
+        static let leaf: CGFloat = 80
+        static let sun: CGFloat = 52
     }
 }
 

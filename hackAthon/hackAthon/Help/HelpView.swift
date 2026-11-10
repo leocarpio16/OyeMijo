@@ -18,6 +18,7 @@ import SwiftData
 struct HelpView: View {
     @State private var modelo: HelpModel
     @Environment(\.dismiss) private var dismiss
+    @State private var confirmarCancelar = false
 
     /// - Parameter frase: lo que dijo con Mijo ("me caí"); nil si tocó el botón Ayuda.
     init(context: ModelContext, nombre: String, motivo: Emergencia, frase: String? = nil) {
@@ -245,16 +246,14 @@ struct HelpView: View {
                     PrimaryButton(title: "Llamar a \(familiar.nombre)", systemImage: "phone",
                                   color: Theme.Palette.help) { modelo.llamar(familiar) }
                 }
-                Button("Cerrar") { dismiss() }
-                    .font(Theme.Typography.textButton)
-                    .foregroundStyle(Theme.Palette.cafe)
-                    .frame(maxWidth: .infinity, minHeight: Theme.Size.textButton)
+                botonCancelar
             } else if case .levantandose(let paso) = modelo.fase {
                 navegacion(alFinal: paso >= totalDePasos)
                 PrimaryButton(title: "No puedo levantarme", systemImage: "exclamationmark.triangle",
                               color: Theme.Palette.help) {
                     Task { await modelo.noPuedoLevantarme() }
                 }
+                botonCancelar
             } else if modelo.fase == .levantado {
                 PrimaryButton(title: "Terminar", systemImage: "checkmark") { dismiss() }
             } else if modelo.preguntaDolor {
@@ -265,6 +264,7 @@ struct HelpView: View {
                               color: Theme.Palette.help) {
                     Task { await modelo.pedirAyuda() }
                 }
+                botonCancelar
             } else {
                 PrimaryButton(title: "Sí, estoy bien", systemImage: "checkmark") {
                     Task { await modelo.estoyBien() }
@@ -273,9 +273,31 @@ struct HelpView: View {
                               color: Theme.Palette.help) {
                     Task { await modelo.pedirAyuda() }
                 }
+                botonCancelar
             }
         }
         .disabled(modelo.fase == .avisando)
+        .confirmationDialog(modelo.familiaYaSabe ? "¿Fue un error? Le aviso a su familia que está bien."
+                                                 : "¿Cancelar la alerta?",
+                            isPresented: $confirmarCancelar, titleVisibility: .visible) {
+            Button("Sí, fue un error", role: .destructive, action: modelo.cancelar)
+            if avisado { Button("Solo cerrar") { dismiss() } }
+            Button("No, seguir", role: .cancel) {}
+        }
+    }
+
+    /// "Cancelar, fue un error": por si tocó Ayuda sin querer o ya está bien.
+    private var botonCancelar: some View {
+        Button {
+            Haptics.tap()
+            confirmarCancelar = true
+        } label: {
+            Label("Cancelar, fue un error", systemImage: "xmark")
+                .font(Theme.Typography.textButton)
+                .foregroundStyle(Theme.Palette.cafe)
+                .frame(maxWidth: .infinity, minHeight: Theme.Size.textButton)
+        }
+        .buttonStyle(.plain)
     }
 
     /// ← paso anterior · 🔊 repetir · botón largo para seguir (al final: "Ya me levanté").

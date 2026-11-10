@@ -36,10 +36,15 @@ final class VoiceService {
     @ObservationIgnored private var sesion = 0
     @ObservationIgnored private var fraseActual: ObjectIdentifier?
     @ObservationIgnored private var alTerminarDeHablar: CheckedContinuation<Void, Never>?
+    /// true cuando la frase actual ya empezó a sonar (para detectar si la Voz personal se quedó muda).
+    @ObservationIgnored private var empezoASonar = false
 
     init() {
         sintetizador.delegate = delegado
         delegado.alTerminar = { [weak self] frase in self?.terminoDeHablar(frase) }
+        delegado.alEmpezar = { [weak self] frase in
+            if frase == self?.fraseActual { self?.empezoASonar = true }
+        }
     }
 
     // MARK: Permisos
@@ -60,11 +65,28 @@ final class VoiceService {
         callar()
         prepararAudio()
         let frase = Self.frase(texto)
+        let conVozPersonal = frase.voice?.voiceTraits.contains(.isPersonalVoice) == true
         fraseActual = ObjectIdentifier(frase)
+        empezoASonar = false
         hablando = true
+        if conVozPersonal {
+            // Respaldo: si la Voz personal no empieza a sonar en 3 s, se calla y se usa la de Apple.
+            let estaFrase = fraseActual
+            Task {
+                try? await Task.sleep(for: .seconds(3))
+                guard fraseActual == estaFrase, !empezoASonar else { return }
+                print("🗣️ La Voz personal no sonó: Mijo regresa a la voz de Apple")
+                Self.vozPersonalFalla = true
+                sintetizador.stopSpeaking(at: .immediate)
+            }
+        }
         await withCheckedContinuation { continuacion in
             alTerminarDeHablar = continuacion
             sintetizador.speak(frase)
+        }
+        // Si la Voz personal falló, se repite la frase con la voz de Apple.
+        if conVozPersonal, Self.vozPersonalFalla, !empezoASonar {
+            await hablar(texto)
         }
     }
 
@@ -140,18 +162,51 @@ final class VoiceService {
     }
 
     /// La frase con la voz, velocidad y tono de Mijo. También la usan las notificaciones.
-    static func frase(_ texto: String) -> AVSpeechUtterance {
+    /// `vozPersonal: false` para grabar audios (notificaciones): ahí solo se usa la voz de Apple.
+    static func frase(_ texto: String, vozPersonal: Bool = true) -> AVSpeechUtterance {
         let frase = AVSpeechUtterance(string: texto)
-        frase.voice = vozDeMijo
+        if vozPersonal, let personal = Self.buscarVozPersonal() {
+            // La Voz personal ya suena como la persona: sin cambiarle velocidad ni tono.
+            frase.voice = personal
+            return frase
+        }
+        frase.voice = mejorVozDeApple
         frase.rate = 0.48 // apenas más lento que lo normal (0.5): claro sin sonar arrastrado
         frase.pitchMultiplier = 1.05 // un poquito más joven
         return frase
     }
 
+    /// Pide permiso para usar la Voz personal (la que la persona grabó en Ajustes →
+    /// Accesibilidad → Voz personal). iOS lo pregunta una sola vez.
+    static func pedirVozPersonal() async {
+        guard AVSpeechSynthesizer.personalVoiceAuthorizationStatus == .notDetermined else { return }
+        _ = await AVSpeechSynthesizer.requestPersonalVoiceAuthorization()
+    }
+
+    /// true si la Voz personal se quedó muda una vez: ya no se intenta hasta abrir la app otra vez.
+    private static var vozPersonalFalla = false
+    private static var yaLoDijo = false
+
+    /// La Voz personal en español (o la que haya) si dio permiso; nil si no.
+    private static func buscarVozPersonal() -> AVSpeechSynthesisVoice? {
+        guard !vozPersonalFalla else { return nil }
+        let estado = AVSpeechSynthesizer.personalVoiceAuthorizationStatus
+        let personales = AVSpeechSynthesisVoice.speechVoices().filter { $0.voiceTraits.contains(.isPersonalVoice) }
+        if !yaLoDijo {
+            yaLoDijo = true
+            // Para revisar en la consola de Xcode qué ve Mijo.
+            print("🗣️ Voz personal · permiso: \(estado.rawValue) (3 = permitido) · voces: "
+                  + personales.map { "\($0.name) [\($0.language)] \($0.identifier)" }.joined(separator: ", "))
+        }
+        guard estado == .authorized else { return nil }
+        // Solo en español: una Voz personal de otro idioma (p. ej. zh-CN) se queda muda leyendo español.
+        return personales.first { $0.language.hasPrefix("es") }
+    }
+
     /// La voz más natural en español de México que tenga el teléfono.
     /// Orden: Premium → Mejorada → normal; a igual calidad, voz de hombre (Mijo es nieto).
     /// Se descartan las voces "de efecto" (Grandma, Rocko, Shelley…): suenan a robot.
-    private static let vozDeMijo: AVSpeechSynthesisVoice? = {
+    private static let mejorVozDeApple: AVSpeechSynthesisVoice? = {
         let voces = AVSpeechSynthesisVoice.speechVoices().filter {
             $0.language == "es-MX" && $0.identifier.hasPrefix("com.apple.voice.")
         }
@@ -214,6 +269,12 @@ final class VoiceService {
 /// AVSpeechSynthesizer avisa aquí cuando termina de decir una frase.
 private final class DelegadoDeVoz: NSObject, AVSpeechSynthesizerDelegate {
     var alTerminar: (@MainActor (ObjectIdentifier) -> Void)?
+    var alEmpezar: (@MainActor (ObjectIdentifier) -> Void)?
+
+    nonisolated func speechSynthesizer(_ s: AVSpeechSynthesizer, didStart frase: AVSpeechUtterance) {
+        let id = ObjectIdentifier(frase)
+        Task { @MainActor in self.alEmpezar?(id) }
+    }
 
     nonisolated func speechSynthesizer(_ s: AVSpeechSynthesizer, didFinish frase: AVSpeechUtterance) {
         avisar(ObjectIdentifier(frase))

@@ -13,12 +13,12 @@ import SwiftUI
 
 struct FamilyView: View {
     @State private var modelo: FamilyModel
-    /// Al salir, se borra el tema y la app regresa al modo abuela.
-    let onSalir: () -> Void
+    /// Flecha de arriba: a la pantalla del código (sin salir del modo familia).
+    let onRegresar: () -> Void
 
-    init(tema: String, onSalir: @escaping () -> Void) {
+    init(tema: String, onRegresar: @escaping () -> Void) {
         _modelo = State(initialValue: FamilyModel(tema: tema))
-        self.onSalir = onSalir
+        self.onRegresar = onRegresar
     }
 
     var body: some View {
@@ -40,10 +40,6 @@ struct FamilyView: View {
                 } else {
                     sinAvisos
                 }
-                Button("Dejar el modo familia", action: onSalir)
-                    .font(Theme.Typography.textButton)
-                    .foregroundStyle(Theme.Palette.cafeSoft)
-                    .frame(maxWidth: .infinity, minHeight: Theme.Size.textButton)
             }
             .padding(.horizontal, Theme.Spacing.screen)
             .padding(.vertical, Theme.Spacing.l)
@@ -56,6 +52,18 @@ struct FamilyView: View {
 
     private var encabezado: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.s) {
+            HStack {
+                RoundIconButton(systemImage: "arrow.left", label: "Regresar al código", action: onRegresar)
+                Spacer()
+                // El código siempre a la vista, por si otro familiar lo necesita.
+                Label(modelo.tema, systemImage: "key")
+                    .font(Theme.Typography.cardRow)
+                    .foregroundStyle(Theme.Palette.cafeSoft)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
+                    .textSelection(.enabled)
+            }
+            .padding(.bottom, Theme.Spacing.s)
             HStack(spacing: Theme.Spacing.m) {
                 MijoAvatar(size: Theme.Size.cardAvatar)
                 VStack(alignment: .leading, spacing: 0) {
