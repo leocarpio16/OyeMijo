@@ -255,6 +255,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Mijo;
+				INFOPLIST_KEY_NSContactsUsageDescription = "Mijo busca en sus contactos a la persona que usted le pida, para llamarle o mandarle un mensaje.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Mijo usa su ubicación para decirle a su familia dónde está si se cae o pide ayuda.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Mijo usa el micrófono para escucharle.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Mijo convierte su voz en texto para entender qué necesita.";
@@ -291,6 +292,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Mijo;
+				INFOPLIST_KEY_NSContactsUsageDescription = "Mijo busca en sus contactos a la persona que usted le pida, para llamarle o mandarle un mensaje.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Mijo usa su ubicación para decirle a su familia dónde está si se cae o pide ayuda.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Mijo usa el micrófono para escucharle.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Mijo convierte su voz en texto para entender qué necesita.";

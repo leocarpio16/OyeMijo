@@ -10,6 +10,7 @@
 //  3. "Necesito ayuda", "me duele", o no contesta → avisa a la familia por
 //     ntfy con su dirección, Mijo se la dice en voz y le marca al familiar principal.
 //  Si dijo "me siento mal" hablando con Mijo, se salta la pregunta.
+//  4. Cuando logra levantarse, la familia recibe un segundo aviso: "ya se levantó".
 //
 
 import Foundation
@@ -25,6 +26,8 @@ enum FaseDeAyuda: Equatable {
     case levantandose(paso: Int)
     /// `enviado`: si ntfy recibió el aviso (puede fallar sin internet).
     case avisado(enviado: Bool)
+    /// Se levantó con los pasos: pantalla de "¡Muy bien!" hasta que toque Terminar.
+    case levantado
     /// Dijo que está bien: la pantalla se cierra.
     case bien
 }
@@ -46,6 +49,15 @@ final class HelpModel {
         "Apóyese en la silla y suba un pie.",
         "Empújese despacio y siéntese a descansar.",
     ]
+    /// Renglón gris debajo de cada paso (solo se lee en pantalla; Mijo dice el paso).
+    static let detalleDePasos = [
+        "Tómese su tiempo. No hay prisa.",
+        "Hacia el lado que le sea más fácil.",
+        "Quédese así hasta sentirse firme.",
+        "También sirve la cama o un sillón que no se mueva.",
+        "Las dos manos en el asiento y adelante su pierna más fuerte.",
+        "Siéntese con calma. No camine todavía.",
+    ]
 
     let voz = VoiceService()
     let nombre: String
@@ -56,6 +68,8 @@ final class HelpModel {
     let ficha: FichaMedica?
     /// Dónde está, para el aviso y para decirlo en voz. Llega unos segundos después.
     private(set) var ubicacion: Ubicacion?
+    /// true cuando a la familia ya le llegó el aviso de la caída (rama "no me duele").
+    private(set) var familiaAvisada = false
 
     @ObservationIgnored private let acciones: MijoActions
     /// Lo que dijo hablando con Mijo ("me caí"); nil si tocó el botón Ayuda.
@@ -191,8 +205,8 @@ final class HelpModel {
             let ubicacion = await esperarUbicacion()
             var mensaje = "Dice que no le duele. Mijo le está ayudando a levantarse."
             if let direccion = ubicacion?.direccion { mensaje += " Está en: \(direccion)." }
-            await NtfyService.avisar(tema: datos.tema, titulo: "\(datos.nombre) se cayó", mensaje: mensaje,
-                                     prioridad: .alta, etiquetas: ["warning"], mapa: ubicacion?.mapa)
+            familiaAvisada = await NtfyService.avisar(tema: datos.tema, titulo: "\(datos.nombre) se cayó", mensaje: mensaje,
+                                                      prioridad: .alta, etiquetas: ["warning"], mapa: ubicacion?.mapa)
         }
         await voz.hablar("Qué bueno que no le duele. Le aviso a su familia y vamos a levantarnos despacio. Cuando termine cada paso, dígame: ya.")
         // Un paso a la vez: lo dice, escucha, y si no contesta pasa solo al siguiente.
@@ -245,10 +259,16 @@ final class HelpModel {
         guard case .levantandose = fase else { return }
         voz.terminarDeEscuchar()
         voz.callar()
-        fase = .avisando
+        fase = .levantado
         Haptics.success()
-        await voz.hablar("Muy bien. Descanse un rato antes de caminar. Aquí sigo por si me necesita.")
-        fase = .bien
+        Task {
+            // Segundo aviso, para que la familia se quede tranquila.
+            guard let datos = acciones.datosParaAvisar() else { return }
+            await NtfyService.avisar(tema: datos.tema, titulo: "\(datos.nombre) ya se levantó",
+                                     mensaje: "Siguió los pasos con Mijo y dice que está bien. Llámele en un rato para saber cómo sigue.",
+                                     prioridad: .normal, etiquetas: ["white_check_mark"])
+        }
+        await voz.hablar("Muy bien. Descanse un rato antes de caminar. Ya le avisé a su familia que está bien.")
     }
 
     func noPuedoLevantarme() async {

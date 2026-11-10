@@ -1,134 +1,171 @@
 {
-  "sourceLanguage": "en",
-  "strings": {
-    "Habla con ${applicationName}": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Habla con ${applicationName}"
+  "sourceLanguage" : "en",
+  "strings" : {
+    "${applicationName}, ¿ya me tomé la pastilla?" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${applicationName}, ¿ya me tomé la pastilla?"
           }
         },
-        "es-419": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Habla con ${applicationName}"
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${applicationName}, ¿ya me tomé la pastilla?"
           }
         }
       }
     },
-    "Hablar con ${applicationName}": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hablar con ${applicationName}"
+    "${applicationName}, ayuda" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${applicationName}, ayuda"
           }
         },
-        "es-419": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hablar con ${applicationName}"
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${applicationName}, ayuda"
           }
         }
       }
     },
-    "Oye ${applicationName}": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Oye ${applicationName}"
+    "${applicationName}, me caí" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "${applicationName}, me caí",
+              "Me caí, ${applicationName}",
+              "${applicationName}, ayuda"
+            ]
           }
         },
-        "es-419": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Oye ${applicationName}"
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "${applicationName}, me caí"
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "${applicationName}, me caí"
           }
         }
       }
     },
-    "${applicationName}, me caí": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "${applicationName}, me caí"
+    "Habla con ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Habla con ${applicationName}",
+              "Hablar con ${applicationName}",
+              "Oye ${applicationName}"
+            ]
           }
         },
-        "es-419": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "${applicationName}, me caí"
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Habla con ${applicationName}"
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Habla con ${applicationName}"
           }
         }
       }
     },
-    "Me caí, ${applicationName}": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Me caí, ${applicationName}"
+    "Hablar con ${applicationName}" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hablar con ${applicationName}"
           }
         },
-        "es-419": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Me caí, ${applicationName}"
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hablar con ${applicationName}"
           }
         }
       }
     },
-    "${applicationName}, ayuda": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "${applicationName}, ayuda"
+    "Me caí, ${applicationName}" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Me caí, ${applicationName}"
           }
         },
-        "es-419": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "${applicationName}, ayuda"
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Me caí, ${applicationName}"
           }
         }
       }
     },
-    "Pregúntale a ${applicationName} si ya me tomé la pastilla": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pregúntale a ${applicationName} si ya me tomé la pastilla"
+    "Oye ${applicationName}" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oye ${applicationName}"
           }
         },
-        "es-419": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pregúntale a ${applicationName} si ya me tomé la pastilla"
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oye ${applicationName}"
           }
         }
       }
     },
-    "${applicationName}, ¿ya me tomé la pastilla?": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "${applicationName}, ¿ya me tomé la pastilla?"
+    "Pregúntale a ${applicationName} si ya me tomé la pastilla" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Pregúntale a ${applicationName} si ya me tomé la pastilla",
+              "${applicationName}, ¿ya me tomé la pastilla?"
+            ]
           }
         },
-        "es-419": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "${applicationName}, ¿ya me tomé la pastilla?"
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Pregúntale a ${applicationName} si ya me tomé la pastilla"
+          }
+        },
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Pregúntale a ${applicationName} si ya me tomé la pastilla"
           }
         }
       }
     }
   },
-  "version": "1.0"
+  "version" : "1.0"
 }

@@ -65,6 +65,9 @@ final class MijoActions {
     private(set) var detalle: String?
     private(set) var etiquetas: [String] = []
     private(set) var accion: AccionDeMijo?
+    /// Lo que Mijo le dice a la persona, ya redactado (sin pasar por la IA).
+    /// Lo que regresa cada función es otra cosa: es el texto para la IA.
+    private(set) var frase: String?
 
     init(context: ModelContext) {
         self.context = context
@@ -74,21 +77,41 @@ final class MijoActions {
         detalle = nil
         etiquetas = []
         accion = nil
+        frase = nil
     }
 
     // MARK: Familia
 
-    func llamar(a nombre: String) -> String {
-        guard let familiar = buscarFamiliar(nombre) else { return noEncontrado() }
+    func llamar(a nombre: String) async -> String {
+        guard let familiar = await buscarPersona(nombre) else { return noEncontrado() }
         accion = .llamar(familiar)
         etiquetas = etiquetas(de: familiar)
+        frase = "Claro, ahorita le marco a \(familiar.nombre)."
         return "Listo: en cuanto termines de hablar se abre la llamada a \(familiar.nombre). Dile que ya le estás marcando."
     }
 
-    func mandarWhatsApp(a nombre: String, texto: String) -> String {
-        guard let familiar = buscarFamiliar(nombre) else { return noEncontrado() }
+    func mandarWhatsApp(a nombre: String, texto: String) async -> String {
         let texto = texto.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !texto.isEmpty else { return "Falta el mensaje. Pregúntale qué le quiere decir a \(familiar.nombre)." }
+        guard let familiar = await buscarPersona(nombre) else {
+            // No está en Mijo ni en sus contactos (o no dio permiso): WhatsApp se abre
+            // con el mensaje escrito y la persona toca a quién mandárselo.
+            guard !texto.isEmpty else { return noEncontrado() }
+            var app = URLComponents(string: "whatsapp://send")!
+            var web = URLComponents(string: "https://wa.me/")!
+            app.queryItems = [.init(name: "text", value: texto)]
+            web.queryItems = app.queryItems
+            guard let url = app.url, let urlWeb = web.url else { return noEncontrado() }
+            accion = .abrirApp(nombre: "WhatsApp", url: url, web: urlWeb)
+            detalle = "“\(texto)”"
+            etiquetas = ["WhatsApp"]
+            frase = "Le abro WhatsApp con el mensaje ya escrito. Toque el nombre de la persona y luego Enviar."
+            return "Listo."
+        }
+        guard !texto.isEmpty else {
+            frase = "¿Qué le quiere decir a \(familiar.nombre)? Dígame, por ejemplo: dile a \(familiar.nombre) que ya comí."
+            return "Falta el mensaje. Pregúntale qué le quiere decir a \(familiar.nombre)."
+        }
+        frase = "Listo. Le dejé el mensaje para \(familiar.nombre) ya escrito. Solo toque el botón verde de Enviar."
         accion = .mandarMensaje(familiar, texto: texto)
         detalle = "“\(texto)”"
         etiquetas = [familiar.nombre, "WhatsApp"]
@@ -98,13 +121,21 @@ final class MijoActions {
     /// Aviso por ntfy a toda la familia, sin que la persona toque nada.
     func avisarFamilia(texto: String) async -> String {
         let texto = texto.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !texto.isEmpty else { return "Falta el aviso. Pregúntale qué le quiere decir a su familia." }
+        guard !texto.isEmpty else {
+            frase = "¿Qué le quiere avisar a su familia? Dígame, por ejemplo: avísale a mi familia que ya llegué."
+            return "Falta el aviso. Pregúntale qué le quiere decir a su familia."
+        }
         guard let datos = datosParaAvisar(), !datos.tema.isEmpty else {
+            frase = "Su familia todavía no está conectada a Mijo."
             return "Su familia todavía no está conectada a Mijo. Dile que le pida a su familia escanear el código de Mijo."
         }
         let enviado = await NtfyService.avisar(tema: datos.tema, titulo: "Mensaje de \(datos.nombre)",
                                                mensaje: texto, prioridad: .alta, etiquetas: ["speech_balloon"])
-        guard enviado else { return "No se pudo mandar el aviso: no hay internet. Dile que lo intente en un rato." }
+        guard enviado else {
+            frase = "No pude mandar el aviso porque no hay internet. Inténtelo en un rato."
+            return "No se pudo mandar el aviso: no hay internet. Dile que lo intente en un rato."
+        }
+        frase = "Listo, ya le avisé a su familia."
         detalle = "“\(texto)”"
         etiquetas = ["Aviso enviado"]
         return "Listo: el aviso ya le llegó a su familia."
@@ -115,10 +146,12 @@ final class MijoActions {
     func decirDireccion() async -> String {
         guard let ubicacion = await LocationService.ubicacionActual(),
               let direccion = ubicacion.direccionCorta else {
+            frase = "No pude saber dónde está. Revise que haya señal y que la ubicación esté permitida."
             return "No pude saber la dirección: no hay señal o falta el permiso de ubicación. Dile que le pregunte a su familia."
         }
         etiquetas = ["Su ubicación"]
         detalle = ubicacion.direccion
+        frase = "Usted está en \(direccion)."
         return "La persona está en: \(direccion)."
     }
 
@@ -129,11 +162,13 @@ final class MijoActions {
         guard let app = AppConocida.todas.first(where: { EmergencyRouter.normalizar($0.nombre) == buscado }),
               let url = URL(string: app.url), let web = URL(string: app.web) else {
             let nombres = AppConocida.todas.map(\.nombre).joined(separator: ", ")
+            frase = "Esa aplicación no la sé abrir. Sé abrir \(nombres)."
             return "Esa app no la sé abrir. Solo sé abrir: \(nombres)."
         }
         accion = .abrirApp(nombre: app.nombre, url: url, web: web)
         etiquetas = [app.nombre]
         detalle = app.pista
+        frase = "Ahorita le abro \(app.nombre). \(app.pista)"
         return "Listo: en cuanto termines de hablar se abre \(app.nombre). Dile esta pista: \(app.pista)"
     }
 
@@ -148,10 +183,19 @@ final class MijoActions {
         accion = .abrirApp(nombre: "YouTube", url: url, web: urlWeb)
         etiquetas = ["YouTube", texto]
         detalle = "Toque el video que quiera ver."
+        frase = "Ahorita le pongo \(texto) en YouTube. Toque el video que quiera ver."
         return "Listo: en cuanto termines de hablar se abre YouTube con videos de \(texto). Dile que toque el video que quiera ver."
     }
 
     // MARK: Familia (ayudas)
+
+    /// Primero entre sus familiares de Mijo; si no está, en los contactos del teléfono.
+    /// Un contacto encontrado no se guarda en Mijo: solo se usa para esta llamada o mensaje.
+    private func buscarPersona(_ nombre: String) async -> Familiar? {
+        if let familiar = buscarFamiliar(nombre) { return familiar }
+        guard let contacto = await ContactsService.buscar(nombre) else { return nil }
+        return Familiar(nombre: contacto.nombre, parentesco: "", telefono: contacto.telefono)
+    }
 
     /// "Leo", "mi hijo", "a Leo": busca por nombre o parentesco.
     private func buscarFamiliar(_ nombre: String) -> Familiar? {
@@ -160,14 +204,22 @@ final class MijoActions {
         // Ojo: un texto vacío "está contenido" en cualquier frase; por eso se revisa que no esté vacío.
         let coincide = { (dato: String) in
             let dato = EmergencyRouter.normalizar(dato)
-            return !dato.isEmpty && buscado.contains(dato)
+            // Guardado como "Leo Carpio" pero le dicen "Leo": también vale el primer nombre.
+            let primero = dato.split(separator: " ").first.map(String.init) ?? ""
+            let palabras = buscado.split(separator: " ").map(String.init)
+            return !dato.isEmpty && (buscado.contains(dato) || (primero.count >= 3 && palabras.contains(primero)))
         }
         // Si solo hay una persona de confianza, "llama a mi hija" es ella.
+        // Pero si dijo otro nombre ("dile a Pedro"), no se le manda a ella por error.
+        let parentescos = ["hijo", "hija", "nieto", "nieta", "esposo", "esposa", "hermano", "hermana",
+                           "sobrino", "sobrina", "familia", "familiar", "contacto", "persona"]
+        let porParentesco = buscado.split(separator: " ").contains { parentescos.contains(String($0)) }
         return familia.first { coincide($0.nombre) || coincide($0.parentesco) }
-            ?? (familia.count == 1 ? familia.first : nil)
+            ?? (familia.count == 1 && porParentesco ? familia.first : nil)
     }
 
     private func noEncontrado() -> String {
+        frase = "No encontré a esa persona en sus contactos. ¿Me dice su nombre otra vez?"
         let familia = (try? context.fetch(FetchDescriptor<Familiar>())) ?? []
         let nombres = familia.map(\.nombre).joined(separator: ", ")
         return "No hay nadie con ese nombre. Familiares guardados: \(nombres)."
@@ -198,11 +250,18 @@ final class MijoActions {
 
     func crearRecordatorio(paraQue: String, hora: Int, minuto: Int) -> String {
         guard (0...23).contains(hora), (0...59).contains(minuto) else {
+            frase = "No entendí la hora. ¿A qué hora le recuerdo su pastilla?"
             return "La hora no es válida. Pregúntale a qué hora la quiere."
         }
         let horario = Horario(hora: hora, minuto: minuto)
         let medicina: Medicina
-        if let existente = buscarMedicina(paraQue) {
+        // "Recuérdame la pastilla a las 9" sin decir de qué: solo se acepta si tiene una sola.
+        let sinNombre = paraQue.trimmingCharacters(in: .whitespaces).isEmpty
+        if sinNombre, unicaMedicina() == nil {
+            frase = "¿Para qué es la pastilla? Dígame, por ejemplo: recuérdame la pastilla de la presión a las nueve de la noche."
+            return "Falta saber para qué es la pastilla. Pregúntale."
+        }
+        if let existente = sinNombre ? unicaMedicina() : buscarMedicina(paraQue) {
             medicina = existente
             if !medicina.horarios.contains(horario) { medicina.horarios.append(horario) }
         } else {
@@ -214,15 +273,20 @@ final class MijoActions {
         let context = self.context
         Task { await NotificationService.reprogramar(context) }
         etiquetas = [etiqueta(de: medicina), horario.texto]
+        frase = "Listo. Le voy a recordar su pastilla de \(medicina.paraQue) a las \(horario.texto)."
         return "Recordatorio guardado: pastilla de \(medicina.paraQue) a las \(horario.texto)."
     }
 
     /// Estado de hoy de una medicina (o de todas si `paraQue` viene vacío).
     func consultarMedicinas(paraQue: String) -> String {
         let todas = (try? context.fetch(FetchDescriptor<Medicina>())) ?? []
-        guard !todas.isEmpty else { return "No tiene medicinas guardadas." }
+        guard !todas.isEmpty else {
+            frase = Self.sinPastillas
+            return "No tiene medicinas guardadas."
+        }
+        frase = YaMeTomeLaPastillaIntent.estado()
 
-        if let medicina = buscarMedicina(paraQue) {
+        if let medicina = buscarMedicina(paraQue) ?? unicaMedicina() {
             etiquetas = [etiqueta(de: medicina)]
             detalle = cuantoFalta(medicina)
             accion = .marcarTomada(medicina)
@@ -233,14 +297,43 @@ final class MijoActions {
 
     /// Cuando lo dice por voz: "ya me tomé la de la presión".
     func marcarTomada(paraQue: String) -> String {
-        guard let medicina = buscarMedicina(paraQue) else {
+        guard let medicina = buscarMedicina(paraQue) ?? unicaMedicina() else {
             let todas = (try? context.fetch(FetchDescriptor<Medicina>())) ?? []
             let lista = todas.map { "la de \($0.paraQue)" }.joined(separator: " o ")
+            frase = todas.isEmpty ? Self.sinPastillas : "¿Cuál pastilla se tomó: \(lista)?"
             return "No sé cuál pastilla fue. Pregúntale si fue \(lista)."
         }
         marcarTomada(medicina)
         etiquetas = [etiqueta(de: medicina)]
+        frase = "Muy bien, ya lo anoté. Su pastilla de \(medicina.paraQue) está tomada."
         return "Anotado: ya se tomó la pastilla de \(medicina.paraQue)."
+    }
+
+    /// "Ya me tomé la pastilla" puede ser un aviso o una pregunta (la voz no trae signos).
+    /// Si hoy ya está anotada, se lo dice. Si no, regresa la medicina para que Mijo
+    /// pregunte "¿Ya se la tomó?" antes de anotar nada.
+    func revisarToma(paraQue: String) -> Medicina? {
+        guard let medicina = buscarMedicina(paraQue) ?? unicaMedicina() else {
+            _ = consultarMedicinas(paraQue: "")
+            return nil
+        }
+        etiquetas = [etiqueta(de: medicina)]
+        if let ultima = tomasDeHoy(medicina).compactMap(\.respondida).max() {
+            let hora = ultima.formatted(.dateTime.hour().minute().locale(Locale(identifier: "es_MX")))
+            frase = "Sí, ya la tengo anotada. Se tomó la pastilla de \(medicina.paraQue) a las \(hora)."
+            return nil
+        }
+        accion = .marcarTomada(medicina)
+        frase = "Todavía no la tengo anotada. ¿Ya se tomó la pastilla de \(medicina.paraQue)?"
+        return medicina
+    }
+
+    static let sinPastillas = "No tiene pastillas guardadas todavía. Dígame, por ejemplo: recuérdame la pastilla de la presión a las nueve de la noche."
+
+    /// Si solo tiene una medicina, "la pastilla" es esa.
+    private func unicaMedicina() -> Medicina? {
+        let todas = (try? context.fetch(FetchDescriptor<Medicina>())) ?? []
+        return todas.count == 1 ? todas.first : nil
     }
 
     /// Anota la toma que toca ahora (o, si no hay, la de esta hora).
@@ -256,6 +349,7 @@ final class MijoActions {
     func registrarComida(_ tipo: TipoComida, yaComio: Bool) -> String {
         context.insert(Comida(tipo: tipo, yaComio: yaComio))
         try? context.save()
+        frase = yaComio ? "Qué bueno. Ya anoté su \(tipo.rawValue)." : "Está bien, ya lo anoté. Procure comer algo pronto, le hace bien."
         return yaComio ? "Anotado: ya tomó su \(tipo.rawValue)." : "Anotado: todavía no toma su \(tipo.rawValue)."
     }
 

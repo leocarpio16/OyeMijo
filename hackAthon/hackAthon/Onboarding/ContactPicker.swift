@@ -38,7 +38,7 @@ struct ContactPicker: UIViewControllerRepresentable {
 
         func contactPicker(_ picker: CNContactPickerViewController, didSelect contact: CNContact) {
             let nombre = [contact.nickname, contact.givenName, contact.familyName].first { !$0.isEmpty } ?? ""
-            let telefono = contact.phoneNumbers.first?.value.stringValue ?? ""
+            let telefono = ContactsService.celular(de: contact) ?? ""
             parent.onPick(PersonaDeConfianza(nombre: nombre, telefono: telefono))
             parent.isPresented = false
         }

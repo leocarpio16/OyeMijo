@@ -2,11 +2,12 @@
 //  HelpView.swift
 //  hackAthon
 //
-//  Pantalla de emergencia con los colores del equipo y el acomodo de las
-//  plantillas que eligió Leo: título arriba, una ilustración grande sobre
-//  una mancha suave, barra de avance y controles redondos abajo.
+//  Pantalla de emergencia, con los colores del equipo y el acomodo del diseño
+//  que eligió Leo: avance y "Llamar al 911" arriba, una ilustración grande,
+//  título y explicación alineados a la izquierda, y los botones abajo.
 //  - Pregunta: "¿Está bien?" (en una caída: "¿Le duele algo?") con 30 s.
-//  - Caída sin dolor: los pasos para levantarse, uno a la vez (⏮ 🔊 ⏭).
+//  - Caída sin dolor: los pasos para levantarse, uno a la vez (← 🔊 Siguiente).
+//  - Se levantó: "¡Muy bien!" y la familia recibe el aviso de que está bien.
 //  - Aviso enviado: a quién se llamó, dónde está y la ficha médica.
 //  Regla de marca: Mijo no aparece junto a una alerta de emergencia.
 //
@@ -30,18 +31,16 @@ struct HelpView: View {
 
             // El margen va dentro del scroll para que nada se corte en los bordes.
             ScrollView {
-                VStack(spacing: Theme.Spacing.xl) {
-                    if avisado {
-                        avisoEnviado
-                    } else {
-                        ilustracion
-                        if case .levantandose(let paso) = modelo.fase {
-                            pasos(paso)
-                        } else {
-                            pregunta
-                        }
+                VStack(alignment: .leading, spacing: Theme.Spacing.xl) {
+                    SceneIllustration(symbol: simbolo, tint: enCalma ? Theme.Palette.answerGlow : Theme.Palette.helpGlow)
+                    switch modelo.fase {
+                    case .levantandose(let paso): pasos(paso)
+                    case .levantado: felicitacion
+                    case .avisado: avisoEnviado
+                    default: pregunta
                     }
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, margen)
                 .padding(.bottom, Theme.Spacing.l)
             }
@@ -76,50 +75,40 @@ struct HelpView: View {
         if case .levantandose = modelo.fase { true } else { false }
     }
 
+    /// Pasos y felicitación van en ámbar tranquilo; la alerta, en rosa.
+    private var enCalma: Bool { levantandose || modelo.fase == .levantado }
+
     private var totalDePasos: Int { HelpModel.pasosParaLevantarse.count }
 
     // MARK: Barra de arriba
 
-    /// Título centrado; al final, botón redondo para cerrar a la izquierda.
+    /// A la izquierda, en qué va (alerta o avance de los pasos); a la derecha, el 911 siempre a la mano.
     private var barra: some View {
-        ZStack {
-            Text(tituloDeBarra)
-                .font(Theme.Typography.rowTitle)
-                .foregroundStyle(levantandose ? Theme.Palette.cafe : Theme.Palette.help)
-                .padding(.horizontal, Theme.Size.roundButton + Theme.Spacing.s)
-                .multilineTextAlignment(.center)
-            if avisado {
-                RoundIconButton(systemImage: "xmark", label: "Cerrar") { dismiss() }
-                    .frame(maxWidth: .infinity, alignment: .leading)
+        HStack(spacing: Theme.Spacing.s) {
+            if case .levantandose(let paso) = modelo.fase {
+                Avance(actual: paso, total: totalDePasos)
+            } else if modelo.fase == .levantado {
+                Label("Ya se levantó", systemImage: "checkmark.circle.fill")
+                    .font(Theme.Typography.alertPill)
+                    .foregroundStyle(Theme.Palette.taken)
+            } else {
+                Label(avisado ? "Aviso enviado" : modelo.etiqueta, systemImage: "exclamationmark.triangle.fill")
+                    .font(Theme.Typography.alertPill)
+                    .foregroundStyle(Theme.Palette.help)
+            }
+            Spacer(minLength: Theme.Spacing.s)
+            if modelo.fase != .levantado {
+                WhitePill(title: "911", systemImage: "phone.fill",
+                          color: Theme.Palette.help, iconColor: Theme.Palette.help,
+                          font: Theme.Typography.helpPill, height: Theme.Size.helpPill,
+                          fullWidth: false, shadowOpacity: 0.14, action: modelo.llamarAl911)
+                    .accessibilityLabel("Llamar al 911")
             }
         }
-        .frame(minHeight: Theme.Size.roundButton)
-    }
-
-    private var tituloDeBarra: String {
-        if avisado { return "Aviso enviado" }
-        if levantandose { return "Paso a paso" }
-        return modelo.etiqueta
+        .frame(minHeight: Theme.Size.helpPill)
     }
 
     // MARK: Ilustración
-
-    /// Ilustración grande de línea sobre la mancha: rosa en la alerta, ámbar claro en los pasos.
-    private var ilustracion: some View {
-        ZStack {
-            BlobShape()
-                .fill(levantandose ? Theme.Palette.answerGlow : Theme.Palette.helpGlow)
-            Image(systemName: simbolo)
-                .font(.system(size: Theme.Size.illustration * escala, weight: .light))
-                .foregroundStyle(Theme.Palette.cafe)
-                .contentTransition(.symbolEffect(.replace))
-        }
-        .frame(height: Theme.Size.blob * escala)
-        .accessibilityHidden(true)
-    }
-
-    /// En los pasos la ilustración es más chica para que el texto del paso quepa completo.
-    private var escala: CGFloat { levantandose ? 0.62 : 1 }
 
     private var simbolo: String {
         switch modelo.fase {
@@ -127,8 +116,12 @@ struct HelpView: View {
             let dibujos = ["wind", "figure.core.training", "figure.flexibility",
                            "chair", "figure.step.training", "figure.seated.side"]
             return paso < dibujos.count ? dibujos[paso] : "figure.stand"
+        case .levantado:
+            return "figure.seated.side"
         case .avisando:
             return "antenna.radiowaves.left.and.right"
+        case .avisado:
+            return modelo.familiar == nil ? "house" : "phone.badge.waveform"
         default:
             switch modelo.motivo {
             case .caida: return "figure.fall"
@@ -138,29 +131,55 @@ struct HelpView: View {
         }
     }
 
+    // MARK: Textos
+
+    /// Título grande y explicación gris, alineados a la izquierda.
+    private func textos(_ titulo: String, _ apoyo: String) -> some View {
+        VStack(alignment: .leading, spacing: Theme.Spacing.m) {
+            Text(titulo)
+                .display(Theme.Typography.answerSize)
+                .foregroundStyle(Theme.Palette.cafe)
+                .contentTransition(.opacity)
+            Text(apoyo)
+                .font(Theme.Typography.support)
+                .foregroundStyle(Theme.Palette.cafeSoft)
+        }
+        .fixedSize(horizontal: false, vertical: true)
+    }
+
+    /// "✓ Su familia ya sabe": para que se sienta acompañada mientras se levanta.
+    private func familiaEnterada(_ texto: String) -> some View {
+        Label(texto, systemImage: "checkmark.circle.fill")
+            .font(Theme.Typography.cardRowBold)
+            .foregroundStyle(Theme.Palette.taken)
+            .padding(.horizontal, Theme.Spacing.l)
+            .frame(minHeight: Theme.Size.chip)
+            .background(Theme.Palette.surface, in: .capsule)
+    }
+
     // MARK: Pregunta y cuenta regresiva
 
     private var pregunta: some View {
-        VStack(spacing: Theme.Spacing.l) {
-            Text(textoPregunta)
-                .display(Theme.Typography.answerSize, weight: .semibold)
-                .foregroundStyle(Theme.Palette.cafe)
-                .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
+        VStack(alignment: .leading, spacing: Theme.Spacing.xl) {
+            if modelo.fase == .avisando {
+                textos("Avisando a su familia…", "Aquí estoy con usted. No cuelgue.")
+            } else {
+                textos(modelo.preguntaDolor ? "\(modelo.nombre), ¿le duele algo?" : "\(modelo.nombre), ¿está bien?",
+                       "Toque un botón o dígamelo con su voz.")
+            }
 
             if modelo.fase == .preguntando {
                 VStack(spacing: Theme.Spacing.s) {
-                    HStack {
+                    HStack(alignment: .firstTextBaseline) {
                         Text("Si no contesta, pido ayuda en")
+                            .font(Theme.Typography.cardRow)
+                            .foregroundStyle(Theme.Palette.cafeSoft)
                         Spacer(minLength: Theme.Spacing.s)
                         Text("\(modelo.segundos) s")
-                            .font(Theme.Typography.status)
-                            .foregroundStyle(Theme.Palette.cafe)
+                            .font(Theme.Typography.countdown)
+                            .foregroundStyle(Theme.Palette.help)
                             .contentTransition(.numericText(countsDown: true))
                     }
-                    .font(Theme.Typography.cardRow)
-                    .foregroundStyle(Theme.Palette.cafeSoft)
-
                     BarraQueSeVacia(valor: Double(modelo.segundos) / Double(HelpModel.segundosParaContestar))
                 }
                 .accessibilityElement(children: .ignore)
@@ -169,64 +188,46 @@ struct HelpView: View {
         }
     }
 
-    private var textoPregunta: String {
-        if modelo.fase == .avisando { return "Avisando a su familia…" }
-        return modelo.preguntaDolor ? "\(modelo.nombre), ¿le duele algo?" : "\(modelo.nombre), ¿está bien?"
-    }
-
     // MARK: Pasos para levantarse
 
     private func pasos(_ paso: Int) -> some View {
         let alFinal = paso >= totalDePasos
-        return VStack(spacing: Theme.Spacing.l) {
-            VStack(spacing: Theme.Spacing.s) {
-                HStack {
-                    Text(alFinal ? "Último paso" : "Paso \(paso + 1) de \(totalDePasos)")
-                        .font(Theme.Typography.stepLabel)
-                        .foregroundStyle(Theme.Palette.cafe)
-                    Spacer(minLength: Theme.Spacing.s)
-                    Text("Dígame «ya»")
-                        .font(Theme.Typography.cardRow)
-                        .foregroundStyle(Theme.Palette.cafeSoft)
-                }
-                BarraDePasos(total: totalDePasos, hechos: paso)
+        return VStack(alignment: .leading, spacing: Theme.Spacing.l) {
+            Text(alFinal ? "Último paso" : "Paso \(paso + 1) de \(totalDePasos)")
+                .font(Theme.Typography.stepLabel)
+                .foregroundStyle(Theme.Palette.cafeSoft)
+            textos(alFinal ? "¿Ya se pudo levantar?" : HelpModel.pasosParaLevantarse[paso],
+                   alFinal ? "Si no puede, yo pido ayuda por usted." : HelpModel.detalleDePasos[paso])
+            if modelo.familiaAvisada {
+                familiaEnterada("Su familia ya sabe")
             }
-            Text(alFinal ? "¿Ya se pudo levantar?" : HelpModel.pasosParaLevantarse[paso])
-                .display(Theme.Typography.answerSize, weight: .semibold)
-                .foregroundStyle(Theme.Palette.cafe)
-                .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
-                .contentTransition(.opacity)
+        }
+    }
+
+    // MARK: Ya se levantó
+
+    private var felicitacion: some View {
+        VStack(alignment: .leading, spacing: Theme.Spacing.l) {
+            textos("¡Muy bien, \(modelo.nombre)!", "Siéntese y descanse un rato antes de caminar. Si se marea o le duele algo, dígame.")
+            familiaEnterada("Su familia ya sabe que está bien")
         }
     }
 
     // MARK: Aviso enviado
 
     private var avisoEnviado: some View {
-        VStack(spacing: Theme.Spacing.l) {
-            // Tarjeta plana con ilustración al centro, como las tarjetas de la plantilla.
-            VStack(spacing: Theme.Spacing.m) {
-                Image(systemName: modelo.familiar == nil ? "house" : "phone.badge.waveform")
-                    .font(.system(size: Theme.Size.illustration * 0.7, weight: .light))
+        VStack(alignment: .leading, spacing: Theme.Spacing.l) {
+            textos(enviado ? "Ya le avisé a su familia" : "No pude mandar el aviso",
+                   modelo.familiar.map { "Le estoy marcando a \($0.nombre). No se mueva, ya viene la ayuda." }
+                       ?? "Si es urgente, toque 911 arriba.")
+            if let direccion = modelo.ubicacion?.direccionCorta {
+                Label(direccion, systemImage: "location.fill")
+                    .font(Theme.Typography.cardRowBold)
                     .foregroundStyle(Theme.Palette.cafe)
-                    .accessibilityHidden(true)
-                Text(enviado ? "Ya le avisé a su familia" : "No pude mandar el aviso")
-                    .display(Theme.Typography.answerSize, weight: .semibold)
-                    .foregroundStyle(Theme.Palette.cafe)
-                Text(modelo.familiar.map { "Le estoy marcando a \($0.nombre)" } ?? "Si es urgente, llame al 911")
-                    .font(Theme.Typography.support)
-                    .foregroundStyle(Theme.Palette.cafeSoft)
-                if let direccion = modelo.ubicacion?.direccionCorta {
-                    Label(direccion, systemImage: "location.fill")
-                        .font(Theme.Typography.cardRowBold)
-                        .foregroundStyle(Theme.Palette.cafe)
-                }
+                    .padding(.horizontal, Theme.Spacing.l)
+                    .frame(minHeight: Theme.Size.chip)
+                    .background(Theme.Palette.surface, in: .capsule)
             }
-            .multilineTextAlignment(.center)
-            .padding(Theme.Spacing.section)
-            .frame(maxWidth: .infinity)
-            .background(Theme.Palette.helpGlow, in: .rect(cornerRadius: Theme.Radius.card))
-
             if let ficha = modelo.ficha { FichaCard(ficha: ficha) }
         }
     }
@@ -244,15 +245,18 @@ struct HelpView: View {
                     PrimaryButton(title: "Llamar a \(familiar.nombre)", systemImage: "phone",
                                   color: Theme.Palette.help) { modelo.llamar(familiar) }
                 }
-            } else if levantandose {
-                reproductor
-                PrimaryButton(title: "Ya me levanté", systemImage: "checkmark") {
-                    Task { await modelo.yaMeLevante() }
-                }
+                Button("Cerrar") { dismiss() }
+                    .font(Theme.Typography.textButton)
+                    .foregroundStyle(Theme.Palette.cafe)
+                    .frame(maxWidth: .infinity, minHeight: Theme.Size.textButton)
+            } else if case .levantandose(let paso) = modelo.fase {
+                navegacion(alFinal: paso >= totalDePasos)
                 PrimaryButton(title: "No puedo levantarme", systemImage: "exclamationmark.triangle",
                               color: Theme.Palette.help) {
                     Task { await modelo.noPuedoLevantarme() }
                 }
+            } else if modelo.fase == .levantado {
+                PrimaryButton(title: "Terminar", systemImage: "checkmark") { dismiss() }
             } else if modelo.preguntaDolor {
                 PrimaryButton(title: "No me duele", systemImage: "checkmark") {
                     Task { await modelo.noMeDuele() }
@@ -270,27 +274,45 @@ struct HelpView: View {
                     Task { await modelo.pedirAyuda() }
                 }
             }
-            // En los pasos, "No puedo levantarme" ya lleva a la ayuda.
-            if !levantandose {
-                Button("Llamar al 911", action: modelo.llamarAl911)
-                    .font(Theme.Typography.textButton)
-                    .foregroundStyle(Theme.Palette.help)
-                    .frame(maxWidth: .infinity, minHeight: Theme.Size.textButton)
-            }
         }
         .disabled(modelo.fase == .avisando)
     }
 
-    /// ⏮ paso anterior · 🔊 repetir (grande) · ⏭ siguiente, como un reproductor.
-    private var reproductor: some View {
-        HStack(spacing: Theme.Spacing.xl) {
-            RoundIconButton(systemImage: "backward.fill", label: "Paso anterior", action: modelo.pasoAnterior)
+    /// ← paso anterior · 🔊 repetir · botón largo para seguir (al final: "Ya me levanté").
+    private func navegacion(alFinal: Bool) -> some View {
+        HStack(spacing: Theme.Spacing.m) {
+            RoundIconButton(systemImage: "arrow.left", label: "Paso anterior", size: Theme.Size.actionButton,
+                            background: Theme.Palette.cafe, iconColor: Theme.Palette.surface,
+                            action: modelo.pasoAnterior)
             RoundIconButton(systemImage: "speaker.wave.2.fill", label: "Repetir el paso",
-                            size: Theme.Size.actionButton + Theme.Spacing.m, background: Theme.Palette.brandBrown,
-                            iconColor: Theme.Palette.surface, action: modelo.repetirPaso)
-            RoundIconButton(systemImage: "forward.fill", label: "Siguiente paso", action: modelo.siguientePaso)
+                            size: Theme.Size.actionButton, action: modelo.repetirPaso)
+            if alFinal {
+                PrimaryButton(title: "Ya me levanté", systemImage: "checkmark") {
+                    Task { await modelo.yaMeLevante() }
+                }
+            } else {
+                PrimaryButton(title: "Siguiente", systemImage: "arrow.right", action: modelo.siguientePaso)
+            }
         }
-        .padding(.bottom, Theme.Spacing.xs)
+    }
+}
+
+/// Avance de los pasos: una rayita larga ámbar en el actual y puntos en los demás.
+private struct Avance: View {
+    let actual: Int
+    let total: Int
+
+    var body: some View {
+        HStack(spacing: 5) {
+            ForEach(0...total, id: \.self) { paso in
+                Capsule()
+                    .fill(paso == actual ? Theme.Palette.brandAmber
+                          : paso < actual ? Theme.Palette.brandBrown : Theme.Palette.stepPending)
+                    .frame(width: paso == actual ? Theme.Size.stepDotActive : Theme.Size.stepDot,
+                           height: Theme.Size.stepDot)
+            }
+        }
+        .accessibilityHidden(true)
     }
 }
 
@@ -310,23 +332,6 @@ private struct BarraQueSeVacia: View {
             }
         }
         .frame(height: Theme.Size.progressBar)
-    }
-}
-
-/// Un segmento por paso: café los que ya pasaron y el actual, tenue los que faltan.
-private struct BarraDePasos: View {
-    let total: Int
-    let hechos: Int
-
-    var body: some View {
-        HStack(spacing: Theme.Spacing.xs) {
-            ForEach(0..<total, id: \.self) { paso in
-                Capsule()
-                    .fill(paso <= hechos ? Theme.Palette.cafe : Theme.Palette.stepPending)
-                    .frame(height: Theme.Size.progressBar)
-            }
-        }
-        .accessibilityHidden(true)
     }
 }
 

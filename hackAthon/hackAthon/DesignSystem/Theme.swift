@@ -49,6 +49,8 @@ enum Theme {
         static let contactAvatar = Color(hex: 0xFEBF93)
         /// Puntos de avance del registro que todavía no se hacen.
         static let stepPending = Color(hex: 0x5D352B).opacity(0.20)
+        /// Hoja clara de la ilustración de caída (la oscura usa `brandBrown`).
+        static let leafLight = Color(hex: 0xE9A53A)
         /// Fondo del anillo de la cuenta regresiva.
         static let helpTrack = Color(hex: 0xF8DCD5)
     }
@@ -106,6 +108,8 @@ enum Theme {
         /// Estado de cada pastilla: "Tomada", "Ahora".
         static let status = dm("Bold", 22, .title2)
         static let statusSoft = dm("SemiBold", 22, .title2)
+        /// Segundos de la cuenta regresiva de ayuda, junto a su barra.
+        static let countdown = Font.custom("DMSans36pt-Bold", size: 30, relativeTo: .title)
         /// Renglones de la ficha médica.
         static let cardRow = dm("Regular", 20, .title3)
         static let cardRowBold = dm("SemiBold", 20, .title3)
@@ -188,6 +192,10 @@ enum Theme {
         static let illustration: CGFloat = 104
         /// Barra de avance de los pasos y de la cuenta regresiva.
         static let progressBar: CGFloat = 6
+        /// Escena de la pantalla de caída: alto total, hoja grande y sol.
+        static let scene: CGFloat = 250
+        static let leaf: CGFloat = 96
+        static let sun: CGFloat = 64
     }
 }
 

@@ -36,10 +36,11 @@ enum LocationService {
     static func ubicacionActual(segundos: Int = 10) async -> Ubicacion? {
         guard let lugar = await primeraLectura(segundos: segundos) else { return nil }
         let direccion = await direccion(de: lugar)
-        var mapa = URLComponents(string: "https://maps.apple.com/")!
+        // Enlace de Google Maps: abre igual en Android, iPhone o computadora (la familia puede no tener iPhone).
+        var mapa = URLComponents(string: "https://www.google.com/maps/search/")!
         let punto = lugar.coordinate
-        mapa.queryItems = [.init(name: "ll", value: "\(punto.latitude),\(punto.longitude)"),
-                           .init(name: "q", value: "Aquí está")]
+        mapa.queryItems = [.init(name: "api", value: "1"),
+                           .init(name: "query", value: "\(punto.latitude),\(punto.longitude)")]
         guard let url = mapa.url else { return nil }
         return Ubicacion(direccion: direccion?.completa, direccionCorta: direccion?.corta, mapa: url)
     }
