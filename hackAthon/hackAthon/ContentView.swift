@@ -32,6 +32,11 @@ struct ContentView: View {
         GeometryReader { geo in
             VStack(spacing: 0) {
                 MijoHeader()
+                    // Para la demo: mantener presionado a Mijo manda la pregunta
+                    // de la pastilla en 5 segundos (bloquear el teléfono para verla).
+                    .onLongPressGesture {
+                        Task { await NotificationService.probarAhora(context) }
+                    }
                     .overlay(alignment: .topTrailing) {
                         WhitePill(title: "Ayuda", systemImage: "exclamationmark.triangle",
                                   color: Theme.Palette.help, iconColor: Theme.Palette.help,
@@ -72,6 +77,19 @@ struct ContentView: View {
             .ignoresSafeArea()
         }
         .background(Theme.Palette.cream)
+        .task {
+            // Mijo pregunta por ti: programa las preguntas de pastillas y comidas.
+            if await NotificationService.pedirPermiso() {
+                await NotificationService.reprogramar(context)
+            }
+        }
+        .task {
+            // Mientras la app está abierta, revisa cada minuto si algo se quedó sin confirmar.
+            while !Task.isCancelled {
+                await FamilyAlerts.revisar(context)
+                try? await Task.sleep(for: .seconds(60))
+            }
+        }
         .fullScreenCover(item: $pantalla) { pantalla in
             let nombre = ajustes.first?.comoLlamarla ?? ""
             switch pantalla {

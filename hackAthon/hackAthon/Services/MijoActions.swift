@@ -98,6 +98,9 @@ final class MijoActions {
             context.insert(medicina)
         }
         try? context.save()
+        // Que la nueva hora también tenga su notificación con la voz de Mijo.
+        let context = self.context
+        Task { await NotificationService.reprogramar(context) }
         etiquetas = [etiqueta(de: medicina), horario.texto]
         return "Recordatorio guardado: pastilla de \(medicina.paraQue) a las \(horario.texto)."
     }

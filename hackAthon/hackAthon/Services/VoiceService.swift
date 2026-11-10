@@ -59,10 +59,7 @@ final class VoiceService {
     func hablar(_ texto: String) async {
         callar()
         prepararAudio()
-        let frase = AVSpeechUtterance(string: texto)
-        frase.voice = Self.vozDeMijo
-        frase.rate = 0.48 // apenas más lento que lo normal (0.5): claro sin sonar arrastrado
-        frase.pitchMultiplier = 1.05 // un poquito más joven
+        let frase = Self.frase(texto)
         fraseActual = ObjectIdentifier(frase)
         hablando = true
         await withCheckedContinuation { continuacion in
@@ -140,6 +137,15 @@ final class VoiceService {
         let audio = AVAudioSession.sharedInstance()
         try? audio.setCategory(.playAndRecord, mode: .default, options: [.defaultToSpeaker, .duckOthers])
         try? audio.setActive(true)
+    }
+
+    /// La frase con la voz, velocidad y tono de Mijo. También la usan las notificaciones.
+    static func frase(_ texto: String) -> AVSpeechUtterance {
+        let frase = AVSpeechUtterance(string: texto)
+        frase.voice = vozDeMijo
+        frase.rate = 0.48 // apenas más lento que lo normal (0.5): claro sin sonar arrastrado
+        frase.pitchMultiplier = 1.05 // un poquito más joven
+        return frase
     }
 
     /// La voz más natural en español de México que tenga el teléfono.

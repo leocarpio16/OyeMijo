@@ -35,15 +35,16 @@ Marca: [ ] pendiente · [x] hecho.
 
 ## Bloque 2 · Notificaciones con voz y medicinas (lunes, ~17:30–19:30)
 - [x] Pantalla "Sus pastillas de hoy" (diseño `Pastillas`): Tomada / Ahora / Sin confirmar / Después, "Ya me la tomé", "Escuchar". Se abre desde la pastilla de Inicio
-- [ ] Generar audio de la frase (voz de Mijo) en Library/Sounds y usarlo como sonido
-- [ ] Categorías con botones: [Sí] [Todavía no] / [Ya me la tomé] [Más tarde]
-- [ ] Respuestas registradas sin abrir la app; reintento a los 30 min
+- [x] Generar audio de la frase (voz de Mijo) en Library/Sounds y usarlo como sonido (probado en Mac: .caf 16 bits, 4.5 s)
+- [x] Categorías con botones: [Sí] [Todavía no] / [Ya me la tomé] [Más tarde]
+- [x] Respuestas registradas sin abrir la app; reintento a los 30 min · **sin probar en iPhone**
+- [x] Demo: mantener presionado a Mijo en Inicio → pregunta de la pastilla en 5 s
 - [ ] AlarmKit para medicinas críticas
 - **Listo cuando:** en el simulador llega "¿Ya cenó, doña Mari?" con voz y el botón queda registrado
 
 ## Bloque 3 · Familia por ntfy (lunes, ~19:30–20:30)
 - [x] `NtfyService`: POST con título, mensaje y prioridad (JSON; probado con ntfy.sh → 200) · falta ubicación
-- [ ] Eventos: caída, medicina sin confirmar, comida sin confirmar
+- [x] Eventos: caída, medicina sin confirmar, comida sin confirmar (los dos últimos se revisan con la app abierta: límite de iOS)
 - [ ] Probar con la app ntfy en el teléfono de Arturo o Sebastian
 - **Listo cuando:** el aviso llega a otro teléfono
 

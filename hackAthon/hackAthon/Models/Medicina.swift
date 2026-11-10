@@ -44,11 +44,13 @@ final class Medicina {
         }
     }
 
-    /// La toma que toca confirmar: la más reciente sin tomar que ya pasó o que
-    /// toca en la próxima hora. nil si no hay ninguna por ahora.
+    /// La toma que toca "ahora": sin tomar, de hace menos de 2 horas o de la
+    /// próxima hora. Las más viejas sin tomar quedan "sin confirmar".
     func horarioPorConfirmar(ahora: Date = .now) -> Horario? {
-        let limite = Horario(de: ahora).minutosDelDia + 60
-        return horarios.sorted().last { $0.minutosDelDia <= limite && !tomadaHoy($0) }
+        let minuto = Horario(de: ahora).minutosDelDia
+        return horarios.sorted().last {
+            (minuto - 120...minuto + 60).contains($0.minutosDelDia) && !tomadaHoy($0)
+        }
     }
 
     /// Siguiente hora de hoy en que toca; nil si ya pasaron todas.

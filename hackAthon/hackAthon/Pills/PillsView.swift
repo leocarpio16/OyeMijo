@@ -110,11 +110,9 @@ struct PillsView: View {
         return una.horario.minutosDelDia <= Horario(de: .now).minutosDelDia ? .sinConfirmar : .despues
     }
 
-    /// La toma que marca "Ya me la tomé": la más reciente sin tomar que ya
-    /// pasó o que toca en la próxima hora.
+    /// La toma que marca "Ya me la tomé" (la misma regla que la pastilla de Inicio).
     private var porTomar: Dosis? {
-        let limite = Horario(de: .now).minutosDelDia + 60
-        return dosis.last { $0.horario.minutosDelDia <= limite && !$0.medicina.tomadaHoy($0.horario) }
+        dosis.last { $0.medicina.horarioPorConfirmar() == $0.horario }
     }
 
     private var faltan: Int {

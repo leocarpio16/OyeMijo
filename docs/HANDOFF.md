@@ -1,4 +1,4 @@
-# HANDOFF · lunes 9 nov 2026, ~18:40
+# HANDOFF · lunes 9 nov 2026, ~19:15
 
 ## Dónde estamos
 - **Bloque 1 · Voz: ~90 %.** Leo agregó los permisos y probó en su iPhone; se arreglaron los 3 problemas que encontró (ver abajo). Falta su 2.ª prueba.
@@ -39,13 +39,15 @@
 - El tema de ntfy se imprime en la consola de Xcode al abrir: `🔔 Tema de ntfy de la familia: mijo-…`.
 
 ## Plan nuevo (18:30, aprobado por Leo: "la veo muy inmadura")
-Orden por lo que ve el jurado: 1) Ayuda → "¿Está bien?" ✅ · 2) "Sus pastillas de hoy" ✅ · 3) Mijo pregunta por ti (notificación con voz + botones) · 4) Registro por voz corto (Nombre → Contacto → QR → Listo) · 5) Siri · 6) Pulido (transiciones, vibración, "pensando", prueba en iPhone). Fuera: INE, Talleres, Intereses, app del familiar (`Fam*`).
+Orden por lo que ve el jurado: 1) Ayuda → "¿Está bien?" ✅ · 2) "Sus pastillas de hoy" ✅ · 3) Mijo pregunta por ti ✅ (falta probar en iPhone) · 4) Registro por voz corto (Nombre → Contacto → QR → Listo) · 5) Siri · 6) Pulido (transiciones, vibración, "pensando", prueba en iPhone). Fuera: INE, Talleres, Intereses, app del familiar (`Fam*`).
 - Hecho a las 18:40: `Help/` (HelpModel + HelpView), `Pills/PillsView`, `DesignSystem/TiltedCard`, `Medicina.horarioPorConfirmar()/tomadaHoy()`, `Horario(de:)/fechaDeHoy`. La emergencia salió de `ConversationModel`: ahora la conversación cambia a `HelpView` con `frase`.
-- **Sin commit** desde `f33ad9e` (CLAUDE.md: commit solo cuando Leo lo pida).
+- Commit `18e8d05` (Ayuda + Pastillas). **Sin commit:** #3 notificaciones.
+- #3 (19:15): `Models/Persistence` (base de datos única), `AppDelegate` (respuestas a notificaciones), `Services/NotificationService`, `VoiceRecorder` (voz de Mijo → Library/Sounds/*.caf), `FamilyAlerts` (pastilla/comida sin confirmar 30 min → ntfy; solo con la app abierta). Regla única de "Ahora": dosis sin tomar entre −2 h y +1 h (`Medicina.horarioPorConfirmar`).
+- AlarmKit sigue fuera (2.º en el orden de sacrificio).
 
 ## Siguiente paso exacto
-1. #3 Mijo pregunta por ti: notificaciones locales a la hora de cada pastilla y comida, con categorías [Sí]/[Todavía no] y [Ya me la tomé]/[Más tarde]; respuesta registrada sin abrir la app; sonido = voz de Mijo grabada a archivo (AVSpeechSynthesizer.write) en Library/Sounds; si no confirma en 30 min → ntfy a la familia.
-2. Luego #4 registro por voz corto.
+1. Leo prueba #3 en el iPhone: aceptar notificaciones → mantener presionado a Mijo → bloquear el teléfono → a los 5 s suena la voz de Mijo → "Más tarde" / "Ya me la tomé" (mantener presionada la notificación) → abrir Pastillas y ver el cambio.
+2. #4 Registro por voz corto (pantallas `Nombre`, `Contacto`, `Conectar`, `Listo`).
 
 ## Pendientes del usuario
 - Voz más natural: en el iPhone, Ajustes → Accesibilidad → Contenido leído → Voces → Español (México) → descargar **Juan (Mejorada)** o **Paulina (Premium)**. La app la elige sola.
