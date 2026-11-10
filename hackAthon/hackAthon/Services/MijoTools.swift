@@ -27,6 +27,24 @@ nonisolated struct LlamarFamiliarTool: Tool {
     }
 }
 
+nonisolated struct MandarWhatsAppTool: Tool {
+    let acciones: MijoActions
+    let name = "mandarWhatsApp"
+    let description = "Deja listo un mensaje de WhatsApp para un familiar cuando la persona pide mandarle un mensaje o decirle algo."
+
+    @Generable
+    struct Arguments {
+        @Guide(description: "Nombre o parentesco del familiar, por ejemplo: Leo, mi hija")
+        var familiar: String
+        @Guide(description: "El mensaje tal como lo leerá el familiar, escrito como si lo dijera la persona mayor, por ejemplo: Hijo, ¿vienes a comer el domingo?")
+        var mensaje: String
+    }
+
+    func call(arguments: Arguments) async throws -> String {
+        await acciones.mandarWhatsApp(a: arguments.familiar, texto: arguments.mensaje)
+    }
+}
+
 nonisolated struct CrearRecordatorioMedicinaTool: Tool {
     let acciones: MijoActions
     let name = "crearRecordatorioMedicina"

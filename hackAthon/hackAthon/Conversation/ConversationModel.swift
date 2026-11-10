@@ -110,16 +110,40 @@ final class ConversationModel {
         UIApplication.shared.open(url)
     }
 
+    /// Abre WhatsApp con el mensaje ya escrito (falta 1 toque en Enviar: iOS no deja
+    /// que una app mande mensajes sola). Si no tiene WhatsApp, usa Mensajes.
+    func mandarMensaje(a familiar: Familiar, texto: String) {
+        var digitos = familiar.telefono.filter(\.isNumber)
+        // WhatsApp necesita la lada del país: en México, 52 + 10 dígitos.
+        if digitos.count == 10 { digitos = "52" + digitos }
+        if digitos.count == 13, digitos.hasPrefix("521") { digitos = "52" + digitos.dropFirst(3) }
+        var whatsApp = URLComponents(string: "whatsapp://send")!
+        whatsApp.queryItems = [.init(name: "phone", value: digitos), .init(name: "text", value: texto)]
+        var mensajes = URLComponents()
+        mensajes.scheme = "sms"
+        mensajes.path = familiar.telefono.filter { $0.isNumber || $0 == "+" }
+        mensajes.queryItems = [.init(name: "body", value: texto)]
+        guard let urlWhatsApp = whatsApp.url else { return }
+        UIApplication.shared.open(urlWhatsApp) { abrio in
+            if !abrio, let urlMensajes = mensajes.url {
+                UIApplication.shared.open(urlMensajes)
+            }
+        }
+    }
+
     private func mostrar(_ respuesta: RespuestaDeMijo) {
         guard !cerrada else { return }
         voz.terminarDeEscuchar()
         fase = .respondiendo(respuesta)
         Task {
             await voz.hablar(respuesta.texto)
-            // Mijo hace la llamada él solo en cuanto termina de hablar.
+            // Mijo abre la llamada o el mensaje él solo en cuanto termina de hablar.
             // El botón café se queda en pantalla por si se cuelga o falla.
-            if !cerrada, case .llamar(let familiar) = respuesta.accion {
-                llamar(familiar)
+            guard !cerrada else { return }
+            switch respuesta.accion {
+            case .llamar(let familiar): llamar(familiar)
+            case .mandarMensaje(let familiar, let texto): mandarMensaje(a: familiar, texto: texto)
+            default: break
             }
         }
     }

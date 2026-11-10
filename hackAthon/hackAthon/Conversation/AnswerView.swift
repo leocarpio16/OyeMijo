@@ -60,6 +60,8 @@ struct AnswerView: View {
                         PrimaryButton(title: "Llamar a \(familiar.nombre)", systemImage: "phone") { onAction(accion) }
                     case .marcarTomada:
                         PrimaryButton(title: "Ya me la tomé", systemImage: "checkmark") { onAction(accion) }
+                    case .mandarMensaje:
+                        PrimaryButton(title: "Abrir mensaje", systemImage: "message") { onAction(accion) }
                     }
                 } else {
                     Spacer()

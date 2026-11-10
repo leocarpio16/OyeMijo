@@ -80,6 +80,8 @@ struct ConversationView: View {
             modelo.llamar(familiar)
         case .marcarTomada(let medicina):
             modelo.marcarTomada(medicina)
+        case .mandarMensaje(let familiar, let texto):
+            modelo.mandarMensaje(a: familiar, texto: texto)
         }
     }
 }

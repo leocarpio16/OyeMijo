@@ -3,6 +3,7 @@
 ## Dónde estamos
 - Plan "que no se vea inmadura" (aprobado 18:30): #1 Ayuda ✅ · #2 Pastillas ✅ · #3 Mijo pregunta por ti ✅ · #4 Registro por voz ✅ · #5 Siri ✅ · #6 Pulido ✅ (1.ª pasada). **Nada probado aún en el iPhone** (Leo lo hará y avisará qué falla).
 - Último commit: `cf78c4b` Siri. **Sin commit:** pulido #6 (`DesignSystem/Haptics.swift` nuevo; cambios en ContentView, ConversationModel/View, ListeningView, botones, WaveBars, HelpModel, PillsView, hackAthonApp, ROADMAP, HANDOFF). Preguntar a Leo antes de hacer el commit.
+- **No hacer push a Datisa antes del martes 10 nov, 9:00** (aviso de Leo). Pulido con commit `88687ba`. `mandarWhatsApp` hecho, sin commit.
 - GitHub OyeMijo: hasta `149c2af` (faltan pushes: `! git push`). Entregables `Datisa/`: 1.ª copia subida (`7093400`); actualizar con `! ./scripts/entregar.sh`.
 - ¿Compila? Sí, sin avisos.
 
@@ -26,9 +27,8 @@
 - Pulido: modo claro, silencio 8 s, transiciones, barras "pensando", vibración, estados vacíos, revisado a XXXL.
 
 ## Siguiente paso exacto (orden aprobado por Leo, 20:25)
-1. Preguntar si hace el commit del pulido.
 2. **Mijo "hace cosas" (~1.5 h)**, herramientas nuevas en `Services/MijoTools.swift` + `MijoActions.swift`:
-   - `mandarWhatsApp(familiar, texto)` → abre `https://wa.me/<tel>?text=…` (1 toque Enviar); respaldo Mensajes.
+   - ✅ `mandarWhatsApp` (`AccionDeMijo.mandarMensaje`, se abre solo al terminar de hablar, como la llamada).
    - `avisarFamilia(texto)` → `NtfyService` sin tocar nada.
    - `abrirApp(nombre)` → Netflix/YouTube/WhatsApp/Música/Mapas por URL; `buscarEnYouTube(texto)`; Mijo dice una pista corta.
    - Agregar a las instrucciones del agente y a la tarjeta de respuesta.

@@ -16,7 +16,8 @@ Marca: [ ] pendiente · [x] hecho.
 - [x] Router de emergencia por palabras clave (por ahora contesta con frase fija + botón "Llamar a Leo"; el protocolo es el Bloque 4)
 - [x] Agente: `LanguageModelSession` con instrucciones de "nieto" + herramientas `llamarFamiliar`, `crearRecordatorioMedicina`, `consultarMedicina`, `registrarComida` — **sin probar con la IA real**
 - [ ] Herramientas `avisarFamilia` (ntfy) y `decirDireccion` (CoreLocation)
-- [ ] Mijo "hace cosas" (tipo Muse, aprobado 9 nov 20:25): `mandarWhatsApp` (mensaje listo, 1 toque), `abrirApp` (Netflix/YouTube/WhatsApp…), `buscarEnYouTube`, pista corta
+- [x] `mandarWhatsApp`: Mijo abre WhatsApp con el mensaje escrito (1 toque en Enviar; si no hay WhatsApp, Mensajes) · **sin probar en iPhone**
+- [ ] Mijo "hace cosas" (tipo Muse, aprobado 9 nov 20:25): `abrirApp` (Netflix/YouTube/WhatsApp…), `buscarEnYouTube`, pista corta
 - [x] Manejo de `guardrailViolation` con frase fija
 - [x] Pantallas "Mijo escuchando" y "Mijo le contesta" copiadas del diseño del equipo; botón de Inicio conectado
 - [x] ⚙️ Usuario en Xcode: permisos de micrófono y reconocimiento de voz

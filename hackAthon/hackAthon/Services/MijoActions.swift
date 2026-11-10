@@ -17,6 +17,8 @@ enum AccionDeMijo {
     case llamar(Familiar)
     /// "Ya me la tomé".
     case marcarTomada(Medicina)
+    /// Mijo abre WhatsApp con el mensaje ya escrito; la persona solo toca Enviar.
+    case mandarMensaje(Familiar, texto: String)
 }
 
 /// Lo que se muestra en "Mijo le contesta".
@@ -50,6 +52,24 @@ final class MijoActions {
     // MARK: Familia
 
     func llamar(a nombre: String) -> String {
+        guard let familiar = buscarFamiliar(nombre) else { return noEncontrado() }
+        accion = .llamar(familiar)
+        etiquetas = etiquetas(de: familiar)
+        return "Listo: en cuanto termines de hablar se abre la llamada a \(familiar.nombre). Dile que ya le estás marcando."
+    }
+
+    func mandarWhatsApp(a nombre: String, texto: String) -> String {
+        guard let familiar = buscarFamiliar(nombre) else { return noEncontrado() }
+        let texto = texto.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !texto.isEmpty else { return "Falta el mensaje. Pregúntale qué le quiere decir a \(familiar.nombre)." }
+        accion = .mandarMensaje(familiar, texto: texto)
+        detalle = "“\(texto)”"
+        etiquetas = [familiar.nombre, "WhatsApp"]
+        return "Listo: en cuanto termines de hablar se abre WhatsApp con el mensaje para \(familiar.nombre) ya escrito. Dile que solo toque el botón verde de Enviar."
+    }
+
+    /// "Leo", "mi hijo", "a Leo": busca por nombre o parentesco.
+    private func buscarFamiliar(_ nombre: String) -> Familiar? {
         let familia = (try? context.fetch(FetchDescriptor<Familiar>())) ?? []
         let buscado = EmergencyRouter.normalizar(nombre)
         // Ojo: un texto vacío "está contenido" en cualquier frase; por eso se revisa que no esté vacío.
@@ -58,15 +78,18 @@ final class MijoActions {
             return !dato.isEmpty && buscado.contains(dato)
         }
         // Si solo hay una persona de confianza, "llama a mi hija" es ella.
-        let encontrado = familia.first { coincide($0.nombre) || coincide($0.parentesco) }
+        return familia.first { coincide($0.nombre) || coincide($0.parentesco) }
             ?? (familia.count == 1 ? familia.first : nil)
-        guard let familiar = encontrado else {
-            let nombres = familia.map(\.nombre).joined(separator: ", ")
-            return "No hay nadie con ese nombre. Familiares guardados: \(nombres)."
-        }
-        accion = .llamar(familiar)
-        etiquetas = familiar.parentesco.isEmpty ? [familiar.nombre] : [familiar.nombre, "Su \(familiar.parentesco)"]
-        return "Listo: en cuanto termines de hablar se abre la llamada a \(familiar.nombre). Dile que ya le estás marcando."
+    }
+
+    private func noEncontrado() -> String {
+        let familia = (try? context.fetch(FetchDescriptor<Familiar>())) ?? []
+        let nombres = familia.map(\.nombre).joined(separator: ", ")
+        return "No hay nadie con ese nombre. Familiares guardados: \(nombres)."
+    }
+
+    private func etiquetas(de familiar: Familiar) -> [String] {
+        familiar.parentesco.isEmpty ? [familiar.nombre] : [familiar.nombre, "Su \(familiar.parentesco)"]
     }
 
     /// A quién se llama primero en una emergencia.
