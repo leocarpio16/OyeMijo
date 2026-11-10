@@ -53,7 +53,18 @@ struct PillsView: View {
                     }
                     .multilineTextAlignment(.center)
 
-                    if !dosis.isEmpty {
+                    if dosis.isEmpty {
+                        // Recién registrada: se le dice cómo agregar su primera pastilla.
+                        TiltedCard(spacing: Theme.Spacing.s) {
+                            Text("Dígale a Mijo:")
+                                .font(Theme.Typography.support)
+                                .foregroundStyle(Theme.Palette.cafeSoft)
+                            Text("“Recuérdame mi pastilla de la presión a las 9 de la noche”")
+                                .serif(Theme.Typography.quoteSize)
+                                .foregroundStyle(Theme.Palette.cafe)
+                                .multilineTextAlignment(.center)
+                        }
+                    } else {
                         TiltedCard(spacing: 0) {
                             ForEach(dosis) { una in
                                 renglon(una)
@@ -140,6 +151,7 @@ struct PillsView: View {
         context.insert(Toma(medicina: una.medicina, programada: una.horario.fechaDeHoy,
                             estado: .tomada, respondida: .now))
         try? context.save()
+        Haptics.success()
         Task { await voz.hablar("Muy bien, ya lo anoté.") }
     }
 

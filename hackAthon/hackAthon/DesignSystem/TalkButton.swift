@@ -13,7 +13,10 @@ struct TalkButton: View {
 
     var body: some View {
         let halo = Theme.Size.talkHalo
-        Button(action: action) {
+        Button {
+            Haptics.tap()
+            action()
+        } label: {
             VStack(spacing: Theme.Spacing.l + halo) {
                 Circle()
                     .fill(Theme.Palette.brandAmber)

@@ -15,7 +15,10 @@ struct PrimaryButton: View {
     let action: () -> Void
 
     var body: some View {
-        Button(action: action) {
+        Button {
+            Haptics.tap()
+            action()
+        } label: {
             HStack(spacing: Theme.Spacing.s + 2) {
                 if let systemImage {
                     Image(systemName: systemImage)

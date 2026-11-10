@@ -21,7 +21,10 @@ struct WhitePill: View {
     let action: () -> Void
 
     var body: some View {
-        Button(action: action) {
+        Button {
+            Haptics.tap()
+            action()
+        } label: {
             HStack(spacing: Theme.Spacing.s) {
                 Image(systemName: systemImage)
                     .font(.system(size: 21, weight: .semibold))

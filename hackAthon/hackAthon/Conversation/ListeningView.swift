@@ -46,7 +46,7 @@ struct ListeningView: View {
                 .padding(.top, Theme.Spacing.xl)
 
                 Spacer(minLength: Theme.Spacing.s)
-                WaveBars(level: pensando ? 0 : nivel)
+                WaveBars(level: nivel, thinking: pensando)
                 Spacer(minLength: Theme.Spacing.s)
 
                 PrimaryButton(title: "Ya terminé", action: onDone)

@@ -31,6 +31,9 @@ struct hackAthonApp: App {
                 // El diseño del equipo ya usa letra grande (20–40 pt). Se permite crecer
                 // hasta XXXL para que el Inicio siga cabiendo sin deslizar.
                 .dynamicTypeSize(.large ... .xxxLarge)
+                // Los colores del diseño son claros: en modo oscuro la hora y la
+                // batería saldrían blancas sobre crema.
+                .preferredColorScheme(.light)
         }
         .modelContainer(container)
     }

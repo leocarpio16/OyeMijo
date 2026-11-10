@@ -32,6 +32,9 @@ final class ConversationModel {
     @ObservationIgnored private let agente: MijoAgent
     /// true cuando ya se cerró la pantalla: Mijo no debe seguir hablando.
     @ObservationIgnored private var cerrada = false
+    /// Si no dice nada en este tiempo, se deja de escuchar.
+    @ObservationIgnored private var esperaDeSilencio: Task<Void, Never>?
+    private static let segundosSinHablar = 8
 
     init(context: ModelContext, nombre: String) {
         self.nombre = nombre
@@ -51,15 +54,23 @@ final class ConversationModel {
             try voz.empezarAEscuchar()
         } catch {
             mostrar(RespuestaDeMijo(texto: "Ahorita no puedo escucharle. Inténtelo otra vez en un momento."))
+            return
+        }
+        esperaDeSilencio?.cancel()
+        esperaDeSilencio = Task {
+            try? await Task.sleep(for: .seconds(Self.segundosSinHablar))
+            guard !Task.isCancelled, voz.escuchando, voz.textoEscuchado.isEmpty else { return }
+            await terminar()
         }
     }
 
     /// "Ya terminé" (o se quedó callada): decide qué contestar.
     func terminar() async {
         guard case .escuchando = fase else { return }
+        esperaDeSilencio?.cancel()
         frase = voz.terminarDeEscuchar().trimmingCharacters(in: .whitespacesAndNewlines)
         guard !frase.isEmpty else {
-            mostrar(RespuestaDeMijo(texto: MijoAgent.noEntendi))
+            mostrar(RespuestaDeMijo(texto: "No le escuché. Toque el micrófono y dígame otra vez."))
             return
         }
         fase = .pensando
@@ -80,11 +91,13 @@ final class ConversationModel {
     /// "Ya me la tomé".
     func marcarTomada(_ medicina: Medicina) {
         acciones.marcarTomada(medicina)
+        Haptics.success()
         mostrar(RespuestaDeMijo(texto: "Muy bien, ya lo anoté. Su pastilla de \(medicina.paraQue) está tomada."))
     }
 
     func cerrar() {
         cerrada = true
+        esperaDeSilencio?.cancel()
         voz.terminarDeEscuchar()
         voz.callar()
     }

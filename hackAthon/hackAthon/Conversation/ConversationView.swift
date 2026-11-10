@@ -29,6 +29,7 @@ struct ConversationView: View {
                               pensando: pensando,
                               onBack: cerrar,
                               onDone: { Task { await modelo.terminar() } })
+                    .transition(.opacity)
             case .respondiendo(let respuesta):
                 AnswerView(frase: modelo.frase,
                            respuesta: respuesta,
@@ -36,11 +37,14 @@ struct ConversationView: View {
                            onRepeat: modelo.repetir,
                            onAction: ejecutar,
                            onTalk: { Task { await modelo.escuchar() } })
+                    .transition(.opacity)
             case .emergencia(let motivo):
                 // Protocolo fijo, sin IA: avisa a la familia y marca de una vez.
                 HelpView(context: context, nombre: modelo.nombre, motivo: motivo, frase: modelo.frase)
+                    .transition(.opacity)
             }
         }
+        .animation(.easeInOut(duration: 0.3), value: faseID)
         .task { await modelo.escuchar() }
         // Si ya dijo algo y se queda callada 2 segundos, se toma como "Ya terminé".
         .task(id: modelo.voz.textoEscuchado) {
@@ -50,6 +54,15 @@ struct ConversationView: View {
             await modelo.terminar()
         }
         .onDisappear { modelo.cerrar() }
+    }
+
+    /// Número de la fase, para animar el cambio entre pantallas.
+    private var faseID: Int {
+        switch modelo.fase {
+        case .escuchando, .pensando: 0
+        case .respondiendo: 1
+        case .emergencia: 2
+        }
     }
 
     private var pensando: Bool {

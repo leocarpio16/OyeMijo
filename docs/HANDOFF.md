@@ -1,70 +1,56 @@
-# HANDOFF · lunes 9 nov 2026, ~20:00
+# HANDOFF · lunes 9 nov 2026, ~20:30
 
 ## Dónde estamos
-- **Bloque 1 · Voz: ~90 %.** Leo agregó los permisos y probó en su iPhone; se arreglaron los 3 problemas que encontró (ver abajo). Falta su 2.ª prueba.
-- Último commit: `e91b844` (plan F6). **Cambios sin commit:** todo el Bloque 1 (`Services/`, `Conversation/`, componentes de `DesignSystem/`, `ContentView`, `Theme`, `hackAthonApp`, `.xcodeproj` con los 2 permisos, ROADMAP, HANDOFF).
-- GitHub OyeMijo: hasta `149c2af` (falta `! git push` para `f33ad9e`, el script de entrega).
-- **Entregables del evento:** `Datisa/` ya subido (commit `7093400` en 424144407-enviar-it/HACKATHON-ENTREGABLES). Copia local en `~/Desktop/HACKATHON-ENTREGABLES` (solo `Datisa/`). Para actualizar: `! ./scripts/entregar.sh` (sube lo que tenga commit en Mijo; la Keynote va a mano en `Datisa/Documentacion/`).
+- Plan "que no se vea inmadura" (aprobado 18:30): #1 Ayuda ✅ · #2 Pastillas ✅ · #3 Mijo pregunta por ti ✅ · #4 Registro por voz ✅ · #5 Siri ✅ · #6 Pulido ✅ (1.ª pasada). **Nada probado aún en el iPhone** (Leo lo hará y avisará qué falla).
+- Último commit: `cf78c4b` Siri. **Sin commit:** pulido #6 (`DesignSystem/Haptics.swift` nuevo; cambios en ContentView, ConversationModel/View, ListeningView, botones, WaveBars, HelpModel, PillsView, hackAthonApp, ROADMAP, HANDOFF). Preguntar a Leo antes de hacer el commit.
+- GitHub OyeMijo: hasta `149c2af` (faltan pushes: `! git push`). Entregables `Datisa/`: 1.ª copia subida (`7093400`); actualizar con `! ./scripts/entregar.sh`.
 - ¿Compila? Sí, sin avisos.
 
 ## Decisiones vigentes (no re-discutir)
-- **Diseño = el del equipo "Oye Mijito – Pantallas"**: https://claude.ai/artifact/9TkGCckH36rwbxGNZHwsFq (tipo Design; las pantallas son `project/*.dc.html`: Main, Escuchando, Respuesta, Ayuda, Pastillas, Familia, etc.). Leerlas con Artifact `read` + `paths`. **No inventar estilos**: Leo rechazó ~8 propuestas propias por "verse hechas con IA".
-- Fuentes: Avenir Next + New York (serif del sistema) en lugar de Figtree/Newsreader (no descargamos fuentes).
-- Inicio: panel ámbar con Mijo, pastilla "Ayuda" arriba a la derecha (emergencia), "Buenas tardes," + nombre en serif, pastilla con la siguiente medicina, botón redondo ámbar "Toque y dígame qué necesita". Nada más.
-- Dynamic Type de `.large` a `.xxxLarge` (en `hackAthonApp.swift`).
-- Logo definitivo: `~/Downloads/WhatsApp Image 2026-11-09 at 15.11.38.jpeg` (fondo ámbar, gorra roja). Es el AppIcon y el asset `Mijo` (1600 px).
-- El sistema de diseño de Arturo (azul, fondo gris) quedó **descartado** visualmente; su texto describe funciones fuera del PRD (iOS 27, anti-fraude, enseñar): que no entren al pitch.
-- Lo demás del HANDOFF anterior sigue: Foundation Models + tool calling, emergencias sin IA, ntfy, iOS 26, sin cuenta de pago.
+- **Diseño = "Oye Mijito – Pantallas"** del equipo: https://claude.ai/artifact/9TkGCckH36rwbxGNZHwsFq (leer `project/*.dc.html` con Artifact `read` + `paths`). No inventar estilos ni adornos (Leo rechazó ~8 propuestas propias).
+- Fuentes: Avenir Next + New York (`.serif(_:)`). Todo token en `DesignSystem/Theme.swift`.
+- Mijo es **agente tipo Muse**: lo pide con la voz y Mijo lo hace (IDEAS, Sesión 8). Todo en el teléfono.
+- Emergencias **sin IA** (EmergencyRouter → HelpView); llamar siempre pide 1 toque de iOS.
+- Sin cuentas: perfil local creado por el registro. Ya no se cargan datos de ejemplo solos (demo: mantener presionado a Mijo en Bienvenida).
+- App visible como **Mijo** (Display Name, con permiso de Leo). Frases de Siri en `Intents/AppShortcuts.xcstrings` (es, es-419); proyecto en inglés.
+- "Ahora" de una pastilla = sin tomar entre −2 h y +1 h (`Medicina.horarioPorConfirmar`).
+- Siempre modo claro. Dynamic Type `.large…xxxLarge`.
+- "Enséñame" (guías paso a paso) **fuera** del PRD. Pendiente que Leo decida si Netflix = abrir app + pista corta (recomendado) o guía.
+- AlarmKit fuera (orden de sacrificio).
 
-## Lo último que se hizo
-- Modelos SwiftData en `Models/` (Familiar, Medicina, Toma, Comida, FichaMedica, Ajustes, Horario) + `SampleData` (Doña Mari, Leo/Carmen con teléfonos ficticios `55 0000 000x`, Losartán 50 mg 9:00/21:00, Metformina).
-- `DesignSystem/`: `Theme` (tokens del diseño del equipo), `TalkButton`, `WhitePill`, `MijoAvatar` (para Escuchando/Respuesta).
-- Se borraron (con permiso) los componentes de diseños descartados.
+## Lo último que se hizo (hoy, 18:30–20:30)
+- `Help/` "¿Está bien?" (30 s, voz, ntfy urgente, llamada automática, ficha médica). `Pills/` "Sus pastillas de hoy".
+- Notificaciones con la voz de Mijo (`NotificationService`, `VoiceRecorder` → Library/Sounds, `AppDelegate`, `Persistence`), `FamilyAlerts` (sin confirmar 30 min → ntfy, solo con la app abierta).
+- `Onboarding/` (Bienvenida, Nombre, Contacto, Conectar QR, Permisos, Listo) + `RootView`.
+- `Intents/` Siri: habla con Mijo, Mijo me caí, ¿ya me tomé la pastilla?
+- Pulido: modo claro, silencio 8 s, transiciones, barras "pensando", vibración, estados vacíos, revisado a XXXL.
 
-- **Nuevo (9 nov, 17:15): registro e "inicio de sesión" por voz (F6 del PRD, Bloque 1b del ROADMAP)**, minimalista. Sin cuentas: el perfil vive en el teléfono (Sign in with Apple no sirve con cuenta gratis; no hay servidor para SMS). "Conectar a la familia" = QR del tema ntfy. Fuera: intereses/talleres.
-
-## Bloque 1: qué hay (9 nov, 17:30)
-- `Services/VoiceService.swift`: habla y escucha (es-MX). Si faltan los textos de permiso en el proyecto, `pedirPermisos()` regresa false en vez de tronar.
-- `Services/EmergencyRouter.swift`: palabras clave → `.caida / .malestar / .ayuda`. Hoy la conversación contesta con frase fija + botón "Llamar a <principal>"; el Bloque 4 lo cambia por el protocolo.
-- `Services/MijoActions.swift` (trabajo con SwiftData), `MijoTools.swift` (4 herramientas), `MijoAgent.swift` (sesión, frases fijas para filtro / IA no disponible).
-- `Conversation/`: `ConversationModel` (escuchar → pensar → contestar), `ListeningView`, `AnswerView`, `ConversationView` (se abre desde el botón de Inicio; 2 s de silencio = "Ya terminé").
-- `DesignSystem/`: `MijoHeader` (salió de ContentView), `RoundIconButton`, `PrimaryButton`, `WaveBars`, `.serif(_:)`.
-- Fuera por ahora: `avisarFamilia` (Bloque 3) y `decirDireccion` (Bloque 4). Crear un recordatorio guarda la medicina, pero la notificación es del Bloque 2.
-
-## 1.ª prueba de Leo (18:00) y arreglos
-- Voz robótica → elegía "Shelley" (voz de efecto). Ahora: solo voces `com.apple.voice.*`, la de mejor calidad y, a igual calidad, de hombre.
-- "Ok" → la IA inventó la hora de la pastilla. Ahora las frases cortas ("ok", "sí", "gracias", "hola") se contestan sin IA, y las instrucciones piden usar herramientas solo con una petición clara y hablar siempre de usted.
-- "Me caí" pedía tocar un botón → ahora Mijo avisa solo por ntfy (prioridad urgente) y marca solo al familiar principal en cuanto termina de hablar. iOS siempre muestra un "Llamar" para confirmar: ninguna app puede marcar sin ese toque.
-- "Llama a Leo" también marca solo. Nueva herramienta `marcarMedicinaTomada` ("ya me tomé la de la presión").
-- El tema de ntfy se imprime en la consola de Xcode al abrir: `🔔 Tema de ntfy de la familia: mijo-…`.
-
-## Plan nuevo (18:30, aprobado por Leo: "la veo muy inmadura")
-Orden por lo que ve el jurado: 1) Ayuda → "¿Está bien?" ✅ · 2) "Sus pastillas de hoy" ✅ · 3) Mijo pregunta por ti ✅ (falta probar en iPhone) · 4) Registro por voz corto ✅ (Bienvenida → Nombre → Contacto → QR → Permisos → Listo) · 5) Siri ✅ (falta probar en iPhone) · 5) Siri · 6) Pulido (transiciones, vibración, "pensando", prueba en iPhone). Fuera: INE, Talleres, Intereses, app del familiar (`Fam*`).
-- Hecho a las 18:40: `Help/` (HelpModel + HelpView), `Pills/PillsView`, `DesignSystem/TiltedCard`, `Medicina.horarioPorConfirmar()/tomadaHoy()`, `Horario(de:)/fechaDeHoy`. La emergencia salió de `ConversationModel`: ahora la conversación cambia a `HelpView` con `frase`.
-- Commits: `18e8d05` (Ayuda + Pastillas), `4f363fb` (notificaciones), `239b9ac` (registro). **Sin commit:** #5 Siri (`Intents/`, Display Name = Mijo en el .xcodeproj con permiso de Leo, `ContentView` atiende `AppRouter`).
-- Siri: el proyecto está en inglés (`developmentRegion = en`); las frases en español van en `Intents/AppShortcuts.xcstrings` (es y es-419) y sí salen en la app compilada. No se tocó `knownRegions`.
-- #4 (19:40): el registro crea `Ajustes` (tema ntfy corto `mijo-xxxx-xxxx-xxxx`) y un `Familiar` principal con `parentesco` vacío. Arreglado: un parentesco vacío hacía que "llama a X" coincidiera con cualquiera.
-- #3 (19:15): `Models/Persistence` (base de datos única), `AppDelegate` (respuestas a notificaciones), `Services/NotificationService`, `VoiceRecorder` (voz de Mijo → Library/Sounds/*.caf), `FamilyAlerts` (pastilla/comida sin confirmar 30 min → ntfy; solo con la app abierta). Regla única de "Ahora": dosis sin tomar entre −2 h y +1 h (`Medicina.horarioPorConfirmar`).
-- AlarmKit sigue fuera (2.º en el orden de sacrificio).
-
-## Siguiente paso exacto
-1. Leo prueba en el iPhone (borrar la app primero): registro → Inicio → "Recuérdame la pastilla de la presión a las 9 de la noche" → notificación con voz (mantener presionado a Mijo) → Ayuda → Siri: "Oye Siri, habla con Mijo", "Oye Siri, Mijo, me caí", "Oye Siri, pregúntale a Mijo si ya me tomé la pastilla". Los atajos pueden tardar unos minutos en aparecer tras instalar.
-2. #6 Pulido: transiciones, vibración, estado "pensando", revisar todo en el iPhone.
-3. Bloque 7: README, Keynote, pitch, video, `./scripts/entregar.sh`.
+## Siguiente paso exacto (orden aprobado por Leo, 20:25)
+1. Preguntar si hace el commit del pulido.
+2. **Mijo "hace cosas" (~1.5 h)**, herramientas nuevas en `Services/MijoTools.swift` + `MijoActions.swift`:
+   - `mandarWhatsApp(familiar, texto)` → abre `https://wa.me/<tel>?text=…` (1 toque Enviar); respaldo Mensajes.
+   - `avisarFamilia(texto)` → `NtfyService` sin tocar nada.
+   - `abrirApp(nombre)` → Netflix/YouTube/WhatsApp/Música/Mapas por URL; `buscarEnYouTube(texto)`; Mijo dice una pista corta.
+   - Agregar a las instrucciones del agente y a la tarjeta de respuesta.
+3. **Caída completa (~1 h)**: "¿Le duele algo?" → sí: ntfy con ubicación + dirección en voz (CoreLocation, pedir permiso de ubicación: requiere clave en el .xcodeproj → preguntar) · no: pasos para levantarse. Herramienta `decirDireccion`.
+4. **F5 configuración familiar (~1 h)**: pantalla oculta (mantener presionado) para pastillas, ficha médica y familiares.
+5. Martes temprano: Bloque 7 (README, PRD con lo que existe, pitch, preguntas, Keynote) y `./scripts/entregar.sh` antes de 14:30.
 
 ## Pendientes del usuario
-- Voz más natural: en el iPhone, Ajustes → Accesibilidad → Contenido leído → Voces → Español (México) → descargar **Juan (Mejorada)** o **Paulina (Premium)**. La app la elige sola.
-- Para el aviso: instalar **ntfy** en otro teléfono y suscribirse al tema que sale en la consola de Xcode.
+- Probar en el **iPhone** (no en simulador): borrar la app → registro → "Recuérdame la pastilla de la presión a las 9 de la noche" → mantener presionado a Mijo y bloquear (notificación con voz) → Ayuda → 3 frases de Siri. Reportar qué falla y qué dice Mijo.
+- Voz más natural: Ajustes → Accesibilidad → Contenido leído → Voces → Español (México) → Juan (Mejorada) o Paulina (Premium).
+- Instalar **ntfy** en otro teléfono y escanear el QR del registro.
+- `! git push` y, al final, `! ./scripts/entregar.sh`.
 
 ## Cuidado con
-- Los bloques que el sistema llama desde otros hilos (audio, Speech) van en funciones `nonisolated static` de `VoiceService`: el proyecto usa MainActor por defecto y, si se escriben dentro de un método normal, la app truena al escuchar.
-- Para capturar una pantalla que no es Inicio: cambiar temporalmente la vista raíz en `hackAthonApp.swift`, `./scripts/build.sh --captura`, y restaurar.
-- Los nombres de capturas de macOS traen un espacio especial antes de "p.m.": copiarlas con glob a scratchpad antes de leerlas.
-- Dribbble bloquea lectura automática: pedir capturas.
-- El asset `MijoRecorte` (Mijo sin fondo) ya no se usa; se puede borrar si Leo aprueba.
-- SourceKit marca errores falsos ("Cannot find 'Theme'"); manda `./scripts/build.sh`.
-- Para volver a ver el registro: borrar la app (simulador: `xcrun simctl uninstall booted comTodoBien.hackAthon`). Para saltarlo con doña Mari de ejemplo: mantener presionado a Mijo en Bienvenida.
+- El simulador **no sirve** para voz, Siri, llamadas ni sonido de notificaciones. Tiene un perfil "Sobas" del equipo.
+- Código que el sistema llama desde otros hilos (audio, Speech, notificaciones, Siri) va en funciones `nonisolated`/`@MainActor` explícitas: el proyecto usa MainActor por defecto y si no, truena.
+- Un texto vacío "está contenido" en cualquier frase: revisar `!isEmpty` al comparar (ya pasó con `parentesco`).
+- iOS no ejecuta código de una app cerrada a cierta hora: los avisos de "sin confirmar" salen al abrir la app.
+- Capturas de otras pantallas: cambiar temporalmente la raíz en `hackAthonApp.swift`, `./scripts/build.sh --captura`, restaurar. Simulador apagado → `simctl ui` falla.
+- `git push` lo bloquea el sistema de permisos: Leo lo corre con `!`.
+- SourceKit marca errores falsos; manda `./scripts/build.sh`.
 
 ## Archivos clave
-- `CLAUDE.md`, `docs/PRD.md`, `docs/ROADMAP.md`, `scripts/build.sh`
-- `hackAthon/hackAthon/ContentView.swift`, `hackAthonApp.swift`, `Models/`, `DesignSystem/`
+- `CLAUDE.md`, `docs/PRD.md`, `docs/ROADMAP.md`, `docs/IDEAS.md` (Sesión 8), `scripts/build.sh`, `scripts/entregar.sh`
+- `hackAthon/hackAthon/`: `RootView`, `ContentView`, `Services/` (VoiceService, EmergencyRouter, MijoAgent, MijoTools, MijoActions, NtfyService, NotificationService, VoiceRecorder, FamilyAlerts), `Conversation/`, `Help/`, `Pills/`, `Onboarding/`, `Intents/`, `DesignSystem/`, `Models/`

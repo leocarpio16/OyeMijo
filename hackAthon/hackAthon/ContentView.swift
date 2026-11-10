@@ -61,8 +61,9 @@ struct ContentView: View {
                 .multilineTextAlignment(.center)
                 .padding(.top, Theme.Spacing.l + 2)
 
-                if let texto = proximaMedicina {
-                    WhitePill(title: texto, systemImage: "clock") {
+                // La siguiente pastilla; si todavía no tiene, cómo agregarla.
+                if let texto = proximaMedicina ?? (medicinas.isEmpty ? "Agregar mis pastillas" : nil) {
+                    WhitePill(title: texto, systemImage: medicinas.isEmpty ? "plus" : "clock") {
                         pantalla = .pastillas
                     }
                     .padding(.horizontal, Theme.Spacing.screen)

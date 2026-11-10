@@ -60,6 +60,7 @@ final class HelpModel {
     }
 
     func empezar() async {
+        Haptics.warning()
         if frase != nil {
             await pedirAyuda()
             return
@@ -125,6 +126,7 @@ final class HelpModel {
         }
         guard !cerrada else { return }
         fase = .avisado(enviado: enviado)
+        if enviado { Haptics.success() }
 
         let aviso = enviado ? "Ya le avisé a su familia." : ""
         if let familiar {

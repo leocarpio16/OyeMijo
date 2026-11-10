@@ -15,7 +15,8 @@ Marca: [ ] pendiente · [x] hecho.
 - [x] Servicio de voz: hablar (AVSpeechSynthesizer es-MX) y escuchar (Speech, en el dispositivo) — compila; **sin probar con micrófono** (faltan los permisos)
 - [x] Router de emergencia por palabras clave (por ahora contesta con frase fija + botón "Llamar a Leo"; el protocolo es el Bloque 4)
 - [x] Agente: `LanguageModelSession` con instrucciones de "nieto" + herramientas `llamarFamiliar`, `crearRecordatorioMedicina`, `consultarMedicina`, `registrarComida` — **sin probar con la IA real**
-- [ ] Herramientas `avisarFamilia` (va con ntfy, Bloque 3) y `decirDireccion` (va con CoreLocation, Bloque 4)
+- [ ] Herramientas `avisarFamilia` (ntfy) y `decirDireccion` (CoreLocation)
+- [ ] Mijo "hace cosas" (tipo Muse, aprobado 9 nov 20:25): `mandarWhatsApp` (mensaje listo, 1 toque), `abrirApp` (Netflix/YouTube/WhatsApp…), `buscarEnYouTube`, pista corta
 - [x] Manejo de `guardrailViolation` con frase fija
 - [x] Pantallas "Mijo escuchando" y "Mijo le contesta" copiadas del diseño del equipo; botón de Inicio conectado
 - [x] ⚙️ Usuario en Xcode: permisos de micrófono y reconocimiento de voz
@@ -62,7 +63,8 @@ Marca: [ ] pendiente · [x] hecho.
 ## Bloque 6 · iPhone real y pulido (martes, ~10:00–12:00)
 - [ ] ⚙️ Usuario: firma con Apple ID, Modo desarrollador en el iPhone, instalar
 - [ ] Probar todo en el iPhone 17 Pro (voz, llamadas, ntfy, Siri)
-- [ ] Pulido visual: botones ≥ 70 pt, Dynamic Type, alto contraste, sin rasgos de plantilla
+- [x] Pulido: siempre modo claro, deja de escuchar tras 8 s de silencio, transición escuchando↔respuesta, barras que ondulan mientras piensa, vibración en botones/alerta/confirmación, estado vacío "Agregar mis pastillas", revisado a letra XXXL
+- [ ] Pulido pendiente tras la prueba de Leo en el iPhone
 - [ ] Deseables si hay tiempo (orden del PRD)
 
 ## Bloque 7 · Entrega (martes, ~12:00–14:30)
