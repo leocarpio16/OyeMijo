@@ -61,6 +61,38 @@ nonisolated struct AvisarFamiliaTool: Tool {
     }
 }
 
+nonisolated struct AbrirAppTool: Tool {
+    let acciones: MijoActions
+    let name = "abrirApp"
+    let description = "Abre otra app del teléfono cuando la persona la pide, por ejemplo: ábreme Netflix."
+
+    @Generable
+    struct Arguments {
+        @Guide(description: "Nombre de la app", .anyOf(["YouTube", "Netflix", "WhatsApp", "Música", "Mapas", "Spotify", "Facebook"]))
+        var app: String
+    }
+
+    func call(arguments: Arguments) async throws -> String {
+        await acciones.abrirApp(arguments.app)
+    }
+}
+
+nonisolated struct BuscarEnYouTubeTool: Tool {
+    let acciones: MijoActions
+    let name = "buscarEnYouTube"
+    let description = "Busca videos en YouTube cuando la persona quiere ver o escuchar algo en particular, por ejemplo: ponme canciones de Pedro Infante."
+
+    @Generable
+    struct Arguments {
+        @Guide(description: "Qué buscar, corto, por ejemplo: canciones de Pedro Infante, receta de mole")
+        var busqueda: String
+    }
+
+    func call(arguments: Arguments) async throws -> String {
+        await acciones.buscarEnYouTube(arguments.busqueda)
+    }
+}
+
 nonisolated struct CrearRecordatorioMedicinaTool: Tool {
     let acciones: MijoActions
     let name = "crearRecordatorioMedicina"

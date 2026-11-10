@@ -82,6 +82,8 @@ struct ConversationView: View {
             modelo.marcarTomada(medicina)
         case .mandarMensaje(let familiar, let texto):
             modelo.mandarMensaje(a: familiar, texto: texto)
+        case .abrirApp(_, let url, let web):
+            modelo.abrir(url, respaldo: web)
         }
     }
 }

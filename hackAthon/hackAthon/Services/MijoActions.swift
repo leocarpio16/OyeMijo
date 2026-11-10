@@ -19,6 +19,33 @@ enum AccionDeMijo {
     case marcarTomada(Medicina)
     /// Mijo abre WhatsApp con el mensaje ya escrito; la persona solo toca Enviar.
     case mandarMensaje(Familiar, texto: String)
+    /// Abre otra app (YouTube, Netflix…). Si no está instalada, su página web.
+    case abrirApp(nombre: String, url: URL, web: URL)
+}
+
+/// Apps que Mijo sabe abrir, con la pista corta que dice al abrirlas.
+struct AppConocida {
+    let nombre: String
+    let url: String
+    let web: String
+    let pista: String
+
+    static let todas = [
+        AppConocida(nombre: "YouTube", url: "youtube://", web: "https://www.youtube.com",
+                    pista: "Toque el video que quiera ver."),
+        AppConocida(nombre: "Netflix", url: "nflx://", web: "https://www.netflix.com",
+                    pista: "Toque la película o serie que quiera ver y luego Reproducir."),
+        AppConocida(nombre: "WhatsApp", url: "whatsapp://", web: "https://web.whatsapp.com",
+                    pista: "Toque el nombre de la persona con quien quiere platicar."),
+        AppConocida(nombre: "Música", url: "music://", web: "https://music.apple.com",
+                    pista: "Toque la canción que quiera escuchar."),
+        AppConocida(nombre: "Mapas", url: "maps://", web: "https://maps.apple.com",
+                    pista: "Toque arriba donde dice Buscar y escriba a dónde quiere ir."),
+        AppConocida(nombre: "Spotify", url: "spotify://", web: "https://open.spotify.com",
+                    pista: "Toque la canción que quiera escuchar."),
+        AppConocida(nombre: "Facebook", url: "fb://", web: "https://www.facebook.com",
+                    pista: "Deslice el dedo hacia arriba para ver más."),
+    ]
 }
 
 /// Lo que se muestra en "Mijo le contesta".
@@ -82,6 +109,37 @@ final class MijoActions {
         etiquetas = ["Aviso enviado"]
         return "Listo: el aviso ya le llegó a su familia."
     }
+
+    // MARK: Otras apps
+
+    func abrirApp(_ nombre: String) -> String {
+        let buscado = EmergencyRouter.normalizar(nombre)
+        guard let app = AppConocida.todas.first(where: { EmergencyRouter.normalizar($0.nombre) == buscado }),
+              let url = URL(string: app.url), let web = URL(string: app.web) else {
+            let nombres = AppConocida.todas.map(\.nombre).joined(separator: ", ")
+            return "Esa app no la sé abrir. Solo sé abrir: \(nombres)."
+        }
+        accion = .abrirApp(nombre: app.nombre, url: url, web: web)
+        etiquetas = [app.nombre]
+        detalle = app.pista
+        return "Listo: en cuanto termines de hablar se abre \(app.nombre). Dile esta pista: \(app.pista)"
+    }
+
+    func buscarEnYouTube(_ texto: String) -> String {
+        let texto = texto.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !texto.isEmpty else { return "Falta qué buscar. Pregúntale qué quiere ver." }
+        var app = URLComponents(string: "youtube://results")!
+        var web = URLComponents(string: "https://www.youtube.com/results")!
+        app.queryItems = [.init(name: "search_query", value: texto)]
+        web.queryItems = app.queryItems
+        guard let url = app.url, let urlWeb = web.url else { return "No pude armar la búsqueda." }
+        accion = .abrirApp(nombre: "YouTube", url: url, web: urlWeb)
+        etiquetas = ["YouTube", texto]
+        detalle = "Toque el video que quiera ver."
+        return "Listo: en cuanto termines de hablar se abre YouTube con videos de \(texto). Dile que toque el video que quiera ver."
+    }
+
+    // MARK: Familia (ayudas)
 
     /// "Leo", "mi hijo", "a Leo": busca por nombre o parentesco.
     private func buscarFamiliar(_ nombre: String) -> Familiar? {

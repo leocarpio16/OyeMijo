@@ -124,9 +124,14 @@ final class ConversationModel {
         mensajes.path = familiar.telefono.filter { $0.isNumber || $0 == "+" }
         mensajes.queryItems = [.init(name: "body", value: texto)]
         guard let urlWhatsApp = whatsApp.url else { return }
-        UIApplication.shared.open(urlWhatsApp) { abrio in
-            if !abrio, let urlMensajes = mensajes.url {
-                UIApplication.shared.open(urlMensajes)
+        abrir(urlWhatsApp, respaldo: mensajes.url)
+    }
+
+    /// Abre otra app; si no está instalada, abre `respaldo` (su página web o Mensajes).
+    func abrir(_ url: URL, respaldo: URL?) {
+        UIApplication.shared.open(url) { abrio in
+            if !abrio, let respaldo {
+                UIApplication.shared.open(respaldo)
             }
         }
     }
@@ -143,6 +148,7 @@ final class ConversationModel {
             switch respuesta.accion {
             case .llamar(let familiar): llamar(familiar)
             case .mandarMensaje(let familiar, let texto): mandarMensaje(a: familiar, texto: texto)
+            case .abrirApp(_, let url, let web): abrir(url, respaldo: web)
             default: break
             }
         }

@@ -18,7 +18,8 @@ Marca: [ ] pendiente · [x] hecho.
 - [x] Herramienta `avisarFamilia`: aviso por ntfy a toda la familia sin tocar nada · **sin probar en iPhone**
 - [ ] Herramienta `decirDireccion` (CoreLocation)
 - [x] `mandarWhatsApp`: Mijo abre WhatsApp con el mensaje escrito (1 toque en Enviar; si no hay WhatsApp, Mensajes) · **sin probar en iPhone**
-- [ ] Mijo "hace cosas" (tipo Muse, aprobado 9 nov 20:25): `abrirApp` (Netflix/YouTube/WhatsApp…), `buscarEnYouTube`, pista corta
+- [x] `abrirApp` (YouTube, Netflix, WhatsApp, Música, Mapas, Spotify, Facebook; si no está, su web) y `buscarEnYouTube`, con pista corta en voz · **sin probar en iPhone**
+- [x] Mijo "hace cosas" (tipo Muse, aprobado 9 nov 20:25): `abrirApp` (Netflix/YouTube/WhatsApp…), `buscarEnYouTube`, pista corta
 - [x] Manejo de `guardrailViolation` con frase fija
 - [x] Pantallas "Mijo escuchando" y "Mijo le contesta" copiadas del diseño del equipo; botón de Inicio conectado
 - [x] ⚙️ Usuario en Xcode: permisos de micrófono y reconocimiento de voz

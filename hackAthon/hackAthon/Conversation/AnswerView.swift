@@ -62,6 +62,8 @@ struct AnswerView: View {
                         PrimaryButton(title: "Ya me la tomé", systemImage: "checkmark") { onAction(accion) }
                     case .mandarMensaje:
                         PrimaryButton(title: "Abrir mensaje", systemImage: "message") { onAction(accion) }
+                    case .abrirApp(let nombre, _, _):
+                        PrimaryButton(title: "Abrir \(nombre)", systemImage: "arrow.up.forward.app") { onAction(accion) }
                     }
                 } else {
                     Spacer()
