@@ -68,6 +68,21 @@ final class MijoActions {
         return "Listo: en cuanto termines de hablar se abre WhatsApp con el mensaje para \(familiar.nombre) ya escrito. Dile que solo toque el botón verde de Enviar."
     }
 
+    /// Aviso por ntfy a toda la familia, sin que la persona toque nada.
+    func avisarFamilia(texto: String) async -> String {
+        let texto = texto.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !texto.isEmpty else { return "Falta el aviso. Pregúntale qué le quiere decir a su familia." }
+        guard let datos = datosParaAvisar(), !datos.tema.isEmpty else {
+            return "Su familia todavía no está conectada a Mijo. Dile que le pida a su familia escanear el código de Mijo."
+        }
+        let enviado = await NtfyService.avisar(tema: datos.tema, titulo: "Mensaje de \(datos.nombre)",
+                                               mensaje: texto, prioridad: .alta, etiquetas: ["speech_balloon"])
+        guard enviado else { return "No se pudo mandar el aviso: no hay internet. Dile que lo intente en un rato." }
+        detalle = "“\(texto)”"
+        etiquetas = ["Aviso enviado"]
+        return "Listo: el aviso ya le llegó a su familia."
+    }
+
     /// "Leo", "mi hijo", "a Leo": busca por nombre o parentesco.
     private func buscarFamiliar(_ nombre: String) -> Familiar? {
         let familia = (try? context.fetch(FetchDescriptor<Familiar>())) ?? []

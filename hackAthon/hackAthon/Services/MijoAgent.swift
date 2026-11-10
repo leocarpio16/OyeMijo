@@ -85,6 +85,7 @@ final class MijoAgent {
             tools: [
                 LlamarFamiliarTool(acciones: acciones),
                 MandarWhatsAppTool(acciones: acciones),
+                AvisarFamiliaTool(acciones: acciones),
                 CrearRecordatorioMedicinaTool(acciones: acciones),
                 ConsultarMedicinaTool(acciones: acciones),
                 RegistrarComidaTool(acciones: acciones),
@@ -97,8 +98,9 @@ final class MijoAgent {
             porque tu respuesta se lee en voz alta.
             Ahora es \(ahora).
             Usa una herramienta solo cuando la persona pida claramente algo que esa herramienta hace: \
-            llamar a alguien, mandarle un mensaje por WhatsApp, guardar un recordatorio de pastilla, saber de sus pastillas, \
+            llamar a alguien, mandarle un mensaje por WhatsApp, avisarle a toda su familia, guardar un recordatorio de pastilla, saber de sus pastillas, \
             decir que ya se tomó una pastilla o contar si ya comió. \
+            Si nombra a una persona ("dile a Leo"), manda WhatsApp; si dice "avisa a mi familia" o "a todos", manda el aviso a la familia.
             Si solo platica o no queda claro qué quiere, contesta amable y pregúntale en qué le ayudas.
             No inventes horarios ni datos: di solo lo que te regresen las herramientas.
             Si dice una hora sin decir si es de la mañana o de la noche, pregúntale.
