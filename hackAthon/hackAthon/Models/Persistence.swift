@@ -12,9 +12,9 @@ import SwiftData
 enum Persistence {
     static let container: ModelContainer = {
         do {
-            let container = try ModelContainer(for: Schema(SampleData.modelos))
-            SampleData.cargarSiEstaVacia(container.mainContext)
-            return container
+            // Ya no se cargan datos de ejemplo solos: el registro por voz crea el perfil.
+            // (Para la demo: mantener presionado a Mijo en Bienvenida carga a doña Mari.)
+            return try ModelContainer(for: Schema(SampleData.modelos))
         } catch {
             fatalError("No se pudo crear la base de datos: \(error)")
         }

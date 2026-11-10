@@ -2,8 +2,8 @@
 //  SampleData.swift
 //  hackAthon
 //
-//  Datos de ejemplo de doña Mari. Se cargan la primera vez que se abre la app
-//  (si la base está vacía) y en los #Preview.
+//  Datos de ejemplo de doña Mari. Se usan en los #Preview y en la demo
+//  (mantener presionado a Mijo en Bienvenida).
 //  Los teléfonos son ficticios: la familia los cambia en la configuración.
 //
 

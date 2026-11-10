@@ -1,4 +1,4 @@
-# HANDOFF · lunes 9 nov 2026, ~19:15
+# HANDOFF · lunes 9 nov 2026, ~19:40
 
 ## Dónde estamos
 - **Bloque 1 · Voz: ~90 %.** Leo agregó los permisos y probó en su iPhone; se arreglaron los 3 problemas que encontró (ver abajo). Falta su 2.ª prueba.
@@ -39,15 +39,17 @@
 - El tema de ntfy se imprime en la consola de Xcode al abrir: `🔔 Tema de ntfy de la familia: mijo-…`.
 
 ## Plan nuevo (18:30, aprobado por Leo: "la veo muy inmadura")
-Orden por lo que ve el jurado: 1) Ayuda → "¿Está bien?" ✅ · 2) "Sus pastillas de hoy" ✅ · 3) Mijo pregunta por ti ✅ (falta probar en iPhone) · 4) Registro por voz corto (Nombre → Contacto → QR → Listo) · 5) Siri · 6) Pulido (transiciones, vibración, "pensando", prueba en iPhone). Fuera: INE, Talleres, Intereses, app del familiar (`Fam*`).
+Orden por lo que ve el jurado: 1) Ayuda → "¿Está bien?" ✅ · 2) "Sus pastillas de hoy" ✅ · 3) Mijo pregunta por ti ✅ (falta probar en iPhone) · 4) Registro por voz corto ✅ (Bienvenida → Nombre → Contacto → QR → Permisos → Listo) · 5) Siri · 6) Pulido (transiciones, vibración, "pensando", prueba en iPhone). Fuera: INE, Talleres, Intereses, app del familiar (`Fam*`).
 - Hecho a las 18:40: `Help/` (HelpModel + HelpView), `Pills/PillsView`, `DesignSystem/TiltedCard`, `Medicina.horarioPorConfirmar()/tomadaHoy()`, `Horario(de:)/fechaDeHoy`. La emergencia salió de `ConversationModel`: ahora la conversación cambia a `HelpView` con `frase`.
-- Commit `18e8d05` (Ayuda + Pastillas). **Sin commit:** #3 notificaciones.
+- Commits: `18e8d05` (Ayuda + Pastillas), `4f363fb` (notificaciones). **Sin commit:** #4 registro (`Onboarding/`, `RootView`, `StepDots`, cambios en `MijoHeader`, `Persistence`, `MijoActions`).
+- #4 (19:40): el registro crea `Ajustes` (tema ntfy corto `mijo-xxxx-xxxx-xxxx`) y un `Familiar` principal con `parentesco` vacío. Arreglado: un parentesco vacío hacía que "llama a X" coincidiera con cualquiera.
 - #3 (19:15): `Models/Persistence` (base de datos única), `AppDelegate` (respuestas a notificaciones), `Services/NotificationService`, `VoiceRecorder` (voz de Mijo → Library/Sounds/*.caf), `FamilyAlerts` (pastilla/comida sin confirmar 30 min → ntfy; solo con la app abierta). Regla única de "Ahora": dosis sin tomar entre −2 h y +1 h (`Medicina.horarioPorConfirmar`).
 - AlarmKit sigue fuera (2.º en el orden de sacrificio).
 
 ## Siguiente paso exacto
-1. Leo prueba #3 en el iPhone: aceptar notificaciones → mantener presionado a Mijo → bloquear el teléfono → a los 5 s suena la voz de Mijo → "Más tarde" / "Ya me la tomé" (mantener presionada la notificación) → abrir Pastillas y ver el cambio.
-2. #4 Registro por voz corto (pantallas `Nombre`, `Contacto`, `Conectar`, `Listo`).
+1. Leo prueba en el iPhone (borrar la app primero para ver el registro): registro completo → Inicio → "Recuérdame la pastilla de la presión a las 9 de la noche" → notificación con voz (mantener presionado a Mijo) → Ayuda.
+2. #5 Siri: App Shortcuts "Habla con Mijo" y "Mijo, me caí" (App Intents).
+3. #6 Pulido.
 
 ## Pendientes del usuario
 - Voz más natural: en el iPhone, Ajustes → Accesibilidad → Contenido leído → Voces → Español (México) → descargar **Juan (Mejorada)** o **Paulina (Premium)**. La app la elige sola.
@@ -61,7 +63,7 @@ Orden por lo que ve el jurado: 1) Ayuda → "¿Está bien?" ✅ · 2) "Sus pasti
 - Dribbble bloquea lectura automática: pedir capturas.
 - El asset `MijoRecorte` (Mijo sin fondo) ya no se usa; se puede borrar si Leo aprueba.
 - SourceKit marca errores falsos ("Cannot find 'Theme'"); manda `./scripts/build.sh`.
-- Para reiniciar datos de ejemplo en el simulador: `xcrun simctl uninstall booted comTodoBien.hackAthon`.
+- Para volver a ver el registro: borrar la app (simulador: `xcrun simctl uninstall booted comTodoBien.hackAthon`). Para saltarlo con doña Mari de ejemplo: mantener presionado a Mijo en Bienvenida.
 
 ## Archivos clave
 - `CLAUDE.md`, `docs/PRD.md`, `docs/ROADMAP.md`, `scripts/build.sh`

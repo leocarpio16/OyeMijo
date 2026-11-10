@@ -5,7 +5,8 @@
 //  Created by Leo Carpio on 09/11/26.
 //
 //  Punto de entrada: usa la base de datos compartida (Persistence), conecta
-//  las respuestas de las notificaciones (AppDelegate) y muestra Inicio.
+//  las respuestas de las notificaciones (AppDelegate) y abre RootView
+//  (registro por voz la primera vez; después, Inicio).
 //
 
 import SwiftUI
@@ -17,8 +18,8 @@ struct hackAthonApp: App {
     let container = Persistence.container
 
     init() {
-        // Para probar los avisos: la familia se suscribe a este tema en la app ntfy.
-        // (En el registro por voz, Bloque 1b, se comparte con un código QR.)
+        // Para probar los avisos: la familia se suscribe a este tema en la app ntfy
+        // (en el registro por voz se comparte con un código QR).
         if let tema = try? container.mainContext.fetch(FetchDescriptor<Ajustes>()).first?.temaNtfy {
             print("🔔 Tema de ntfy de la familia: \(tema)")
         }
@@ -26,7 +27,7 @@ struct hackAthonApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            RootView()
                 // El diseño del equipo ya usa letra grande (20–40 pt). Se permite crecer
                 // hasta XXXL para que el Inicio siga cabiendo sin deslizar.
                 .dynamicTypeSize(.large ... .xxxLarge)

@@ -24,12 +24,12 @@ Marca: [ ] pendiente · [x] hecho.
 - **Listo cuando:** "Recuérdame la pastilla a las 9" crea el recordatorio y Mijo lo dice en voz
 
 ## Bloque 1b · Registro por voz (lunes, ~1 h, justo después del Bloque 1) — F6
-- [ ] Mostrar el registro solo si no hay perfil (`Ajustes` vacío); quitar la carga automática de datos de ejemplo en el teléfono real
-- [ ] Componente de paso: pregunta grande en serif + Mijo pequeño + micrófono + texto entendido + [Sí] [Otra vez]
-- [ ] Paso nombre y paso persona de confianza (voz + selector de Contactos)
-- [ ] Paso conectar a la familia: QR del tema de ntfy (CoreImage)
-- [ ] Paso primera medicina por voz (Foundation Models `@Generable`) con respaldo de escribir
-- [ ] Paso permisos ("Permitir todo") y pantalla "¡Listo!"
+- [x] Mostrar el registro solo si no hay perfil (`RootView`); ya no se cargan datos de ejemplo solos (demo: mantener presionado a Mijo en Bienvenida)
+- [x] Componente de paso (`OnboardingStep`, diseño `Nombre`): pregunta en serif, puntos de avance, bocina, tarjeta, Siguiente + micrófono
+- [x] Paso nombre (voz o teclado) y paso persona de confianza (selector de Contactos, sin permiso)
+- [x] Paso conectar a la familia: QR de `https://ntfy.sh/<tema>` (CoreImage) + tema escrito; al confirmar manda un primer aviso
+- [ ] ~~Paso primera medicina~~ fuera del registro corto: se crea hablando con Mijo ("Recuérdame la pastilla…")
+- [x] Paso permisos (micrófono + avisos, "Permitir todo") y pantalla "¡Listo!"
 - **Listo cuando:** con la app recién instalada, se crea el perfil completo solo hablando y se llega a Inicio
 - Diseño: pantallas A–H de "Oye Mijito – Pantallas", minimalista
 

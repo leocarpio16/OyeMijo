@@ -9,6 +9,10 @@
 import SwiftUI
 
 struct TiltedCard<Content: View>: View {
+    /// Inclinación de la tarjeta. Lo que no deba verse inclinado (una caja de
+    /// texto) se gira al revés con `.rotationEffect(.degrees(-TiltedCard.tilt))`.
+    static var tilt: Double { -1.2 }
+
     /// Espacio entre lo que va dentro de la tarjeta.
     var spacing: CGFloat = Theme.Spacing.l
     @ViewBuilder let content: Content
@@ -19,7 +23,7 @@ struct TiltedCard<Content: View>: View {
             .frame(maxWidth: .infinity)
             .background(Theme.Palette.surface, in: .rect(cornerRadius: Theme.Radius.card))
             .shadow(color: Theme.Palette.shadow.opacity(0.10), radius: 20, y: 18)
-            .rotationEffect(.degrees(-1.2))
+            .rotationEffect(.degrees(Self.tilt))
             .background {
                 RoundedRectangle(cornerRadius: Theme.Radius.card)
                     .fill(Theme.Palette.cardBack)

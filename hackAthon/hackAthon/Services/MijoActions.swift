@@ -52,16 +52,20 @@ final class MijoActions {
     func llamar(a nombre: String) -> String {
         let familia = (try? context.fetch(FetchDescriptor<Familiar>())) ?? []
         let buscado = EmergencyRouter.normalizar(nombre)
-        let encontrado = familia.first {
-            buscado.contains(EmergencyRouter.normalizar($0.nombre))
-                || buscado.contains(EmergencyRouter.normalizar($0.parentesco))
+        // Ojo: un texto vacío "está contenido" en cualquier frase; por eso se revisa que no esté vacío.
+        let coincide = { (dato: String) in
+            let dato = EmergencyRouter.normalizar(dato)
+            return !dato.isEmpty && buscado.contains(dato)
         }
+        // Si solo hay una persona de confianza, "llama a mi hija" es ella.
+        let encontrado = familia.first { coincide($0.nombre) || coincide($0.parentesco) }
+            ?? (familia.count == 1 ? familia.first : nil)
         guard let familiar = encontrado else {
             let nombres = familia.map(\.nombre).joined(separator: ", ")
             return "No hay nadie con ese nombre. Familiares guardados: \(nombres)."
         }
         accion = .llamar(familiar)
-        etiquetas = [familiar.nombre, "Su \(familiar.parentesco)"]
+        etiquetas = familiar.parentesco.isEmpty ? [familiar.nombre] : [familiar.nombre, "Su \(familiar.parentesco)"]
         return "Listo: en cuanto termines de hablar se abre la llamada a \(familiar.nombre). Dile que ya le estás marcando."
     }
 

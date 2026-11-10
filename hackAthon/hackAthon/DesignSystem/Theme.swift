@@ -42,6 +42,10 @@ enum Theme {
         static let helpGlow = Color(hex: 0xFDDDD5)
         /// Verde de "Tomada" (6.4:1 sobre blanco).
         static let taken = Color(hex: 0x1B6E31)
+        /// Círculo con la inicial de la persona de confianza.
+        static let contactAvatar = Color(hex: 0xFEBF93)
+        /// Puntos de avance del registro que todavía no se hacen.
+        static let stepPending = Color(hex: 0x5D352B).opacity(0.20)
         /// Fondo del anillo de la cuenta regresiva.
         static let helpTrack = Color(hex: 0xF8DCD5)
     }
@@ -81,6 +85,18 @@ enum Theme {
         static let titleSize: CGFloat = 40   // "Mijo le contesta"
         static let answerSize: CGFloat = 36  // la respuesta de Mijo
         static let countdownSize: CGFloat = 66 // segundos de la cuenta regresiva
+        static let welcomeSize: CGFloat = 56   // "Oye Mijo."
+        static let doneSize: CGFloat = 48      // "¡Listo, Doña Mari!"
+        static let inputSize: CGFloat = 34     // lo que escribe en el registro
+        /// Texto de apoyo grande en Bienvenida y ¡Listo!
+        static let lead = avenir("Regular", 24, .title2)
+        /// "Paso 1 de 4", "Su nombre".
+        static let stepLabel = avenir("DemiBold", 20, .title3)
+        static let fieldLabel = avenir("DemiBold", 21, .title3)
+        /// Nombre de la persona de confianza.
+        static let contactName = avenir("Bold", 28, .title)
+        /// Renglones de permisos: "Micrófono".
+        static let rowTitle = avenir("Bold", 23, .title2)
         /// "Posible caída" en la pastilla roja de arriba.
         static let alertPill = avenir("Bold", 20, .title3)
         /// Botón de texto "Llamar al 911".
@@ -112,6 +128,8 @@ enum Theme {
         static let header: CGFloat = 56
         /// Tarjeta de la respuesta de Mijo.
         static let card: CGFloat = 34
+        /// Campo de texto y marco del código QR.
+        static let input: CGFloat = 22
     }
 
     // MARK: Tamaños
@@ -139,6 +157,24 @@ enum Theme {
         /// Anillo de la cuenta regresiva y su grosor.
         static let countdown: CGFloat = 180
         static let countdownStroke: CGFloat = 12
+        /// Panel de Mijo en Bienvenida y en ¡Listo! (más alto que en Inicio).
+        static let welcomeHeader: CGFloat = 470
+        static let welcomeMijo: CGFloat = 490
+        static let doneHeader: CGFloat = 440
+        static let doneMijo: CGFloat = 470
+        /// Campo de texto del registro y su borde ámbar.
+        static let input: CGFloat = 80
+        static let inputBorder: CGFloat = 3
+        /// Círculo con la inicial del contacto; ícono de cada permiso.
+        static let contactAvatar: CGFloat = 76
+        static let rowIcon: CGFloat = 56
+        /// Botón secundario dentro de una tarjeta ("Elegir otra persona").
+        static let cardButton: CGFloat = 68
+        /// Código QR para conectar a la familia.
+        static let qr: CGFloat = 210
+        /// Puntos de avance del registro.
+        static let stepDot: CGFloat = 10
+        static let stepDotActive: CGFloat = 26
         /// Renglón de cada pastilla en "Sus pastillas de hoy".
         static let pillRow: CGFloat = 64
         /// Etiqueta ámbar "Ahora".
