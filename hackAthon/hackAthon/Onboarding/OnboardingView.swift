@@ -54,7 +54,7 @@ struct OnboardingView: View {
                     .font(Theme.Typography.fieldLabel)
                     .foregroundStyle(Theme.Palette.cafeSoft)
                 TextField("Doña Mari", text: $modelo.nombre)
-                    .serif(Theme.Typography.inputSize)
+                    .display(Theme.Typography.inputSize)
                     .foregroundStyle(Theme.Palette.cafe)
                     .textInputAutocapitalization(.words)
                     .autocorrectionDisabled()
@@ -66,8 +66,6 @@ struct OnboardingView: View {
                         RoundedRectangle(cornerRadius: Theme.Radius.input)
                             .stroke(Theme.Palette.brandAmber, lineWidth: Theme.Size.inputBorder)
                     }
-                    // La tarjeta está inclinada; la caja de texto se endereza para escribir cómodo.
-                    .rotationEffect(.degrees(-TiltedCard<EmptyView>.tilt))
                 if !modelo.nombre.isEmpty {
                     VStack(spacing: 0) {
                         Text("Así le voy a saludar:")
@@ -105,7 +103,7 @@ struct OnboardingView: View {
                 if let persona = modelo.persona {
                     HStack(spacing: Theme.Spacing.m + 2) {
                         Text(String(persona.nombre.prefix(1)))
-                            .serif(Theme.Typography.inputSize, weight: .semibold)
+                            .display(Theme.Typography.inputSize, weight: .semibold)
                             .foregroundStyle(Theme.Palette.cafe)
                             .frame(width: Theme.Size.contactAvatar, height: Theme.Size.contactAvatar)
                             .background(Theme.Palette.contactAvatar, in: .circle)
@@ -188,8 +186,8 @@ struct OnboardingView: View {
     // MARK: 4 · Permisos
 
     private var pasoPermisos: some View {
-        let todo = modelo.microfonoListo && modelo.avisosListos
-        return OnboardingStep(paso: 4, titulo: "Necesito 2 permisos", subtitulo: "Para escucharle y cuidarle",
+        let todo = modelo.microfonoListo && modelo.avisosListos && modelo.ubicacionLista
+        return OnboardingStep(paso: 4, titulo: "Necesito 3 permisos", subtitulo: "Para escucharle y cuidarle",
                               boton: todo ? "Siguiente" : "Permitir todo",
                               onBack: modelo.anterior, onRepeat: repetir,
                               onNext: { Task { await modelo.permitirTodo() } }) {
@@ -200,6 +198,10 @@ struct OnboardingView: View {
                 Rectangle().fill(Theme.Palette.cream).frame(height: 2)
                 permiso("Avisos", "Para sus pastillas", icono: "bell", listo: modelo.avisosListos) {
                     Task { await modelo.permitirAvisos() }
+                }
+                Rectangle().fill(Theme.Palette.cream).frame(height: 2)
+                permiso("Ubicación", "Para decir dónde está si se cae", icono: "location", listo: modelo.ubicacionLista) {
+                    Task { await modelo.permitirUbicacion() }
                 }
             }
         }

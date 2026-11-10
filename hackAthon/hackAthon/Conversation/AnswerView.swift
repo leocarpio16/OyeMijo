@@ -3,7 +3,7 @@
 //  hackAthon
 //
 //  "Mijo le contesta", según el diseño del equipo: la respuesta en una
-//  tarjeta blanca un poco inclinada, "Escuchar" para repetirla y, abajo,
+//  tarjeta blanca, "Escuchar" para repetirla y, abajo,
 //  el botón de la acción y el micrófono para seguir platicando.
 //
 
@@ -30,12 +30,12 @@ struct AnswerView: View {
             }
             .padding(.horizontal, margen)
 
-            // El margen va dentro del scroll para que la tarjeta inclinada y su sombra no se corten.
+            // El margen va dentro del scroll para que la sombra de la tarjeta no se corten.
             ScrollView {
                 VStack(spacing: Theme.Spacing.section) {
                     VStack(spacing: Theme.Spacing.s) {
                         Text("Mijo le contesta")
-                            .serif(Theme.Typography.titleSize)
+                            .display(Theme.Typography.titleSize)
                             .foregroundStyle(Theme.Palette.cafe)
                         if !frase.isEmpty {
                             Text("Usted dijo: “\(frase)”")
@@ -88,7 +88,7 @@ struct AnswerView: View {
     private let margen = Theme.Spacing.screen - Theme.Spacing.xs
 
     private var card: some View {
-        TiltedCard {
+        WhiteCard {
             HStack(spacing: Theme.Spacing.m) {
                 MijoAvatar(size: Theme.Size.cardAvatar)
                 VStack(alignment: .leading, spacing: 0) {
@@ -103,7 +103,7 @@ struct AnswerView: View {
             }
 
             Text(respuesta.texto)
-                .serif(Theme.Typography.answerSize)
+                .display(Theme.Typography.answerSize, weight: .semibold)
                 .foregroundStyle(Theme.Palette.cafe)
                 .multilineTextAlignment(.center)
                 .minimumScaleFactor(0.7)

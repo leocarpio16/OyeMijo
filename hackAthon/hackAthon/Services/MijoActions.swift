@@ -110,6 +110,18 @@ final class MijoActions {
         return "Listo: el aviso ya le llegó a su familia."
     }
 
+    // MARK: Ubicación
+
+    func decirDireccion() async -> String {
+        guard let ubicacion = await LocationService.ubicacionActual(),
+              let direccion = ubicacion.direccionCorta else {
+            return "No pude saber la dirección: no hay señal o falta el permiso de ubicación. Dile que le pregunte a su familia."
+        }
+        etiquetas = ["Su ubicación"]
+        detalle = ubicacion.direccion
+        return "La persona está en: \(direccion)."
+    }
+
     // MARK: Otras apps
 
     func abrirApp(_ nombre: String) -> String {

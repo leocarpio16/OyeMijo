@@ -3,6 +3,9 @@
 //  hackAthon
 //
 //  Tokens de diseño: todo color, tipografía, espaciado y tamaño sale de aquí.
+//  Letra: DM Sans (la eligió Leo; archivos en DesignSystem/Fonts/, se
+//  registra en Fuentes.swift). Títulos con la versión "36pt", hecha para
+//  tamaños grandes.
 //  Vienen del diseño del equipo "Oye Mijito – Pantallas": fondo crema,
 //  panel ámbar con Mijo, texto café, pastillas blancas y rojo solo para ayuda.
 //  Todo el texto tiene contraste ≥ 4.5:1.
@@ -34,7 +37,7 @@ enum Theme {
         static let shadow = Color(hex: 0x5D352B)
         /// Arriba del degradado de "Mijo le contesta" (baja a crema).
         static let answerGlow = Color(hex: 0xFFE8B5)
-        /// Tarjeta de atrás, inclinada, en la respuesta de Mijo.
+        /// Borde del código QR en el registro.
         static let cardBack = Color(hex: 0xFEEBC1)
         /// Brillo naranja debajo del botón ámbar del micrófono.
         static let amberGlow = Color(hex: 0xF59D1D)
@@ -51,36 +54,35 @@ enum Theme {
     }
 
     // MARK: Tipografía
-    // El diseño usa Figtree y Newsreader; aquí van sus equivalentes que ya
-    // vienen en el iPhone: Avenir Next y New York (la serifa de Apple).
-    // Todas respetan Dynamic Type.
+    // DM Sans. Todas respetan Dynamic Type: crecen junto con el estilo de
+    // texto de Apple que se indica (title3, title2…).
     enum Typography {
-        private static func avenir(_ peso: String, _ tamano: CGFloat, _ estilo: Font.TextStyle) -> Font {
-            .custom("AvenirNext-\(peso)", size: tamano, relativeTo: estilo)
+        private static func dm(_ peso: String, _ tamano: CGFloat, _ estilo: Font.TextStyle) -> Font {
+            .custom("DMSans-\(peso)", size: tamano, relativeTo: estilo)
         }
         /// "Buenos días,"
-        static let greeting = avenir("Regular", 20, .title3)
-        /// "Doña Mari" en serifa.
-        static let name = Font.system(.largeTitle, design: .serif, weight: .medium)
+        static let greeting = dm("Regular", 20, .title3)
+        /// "Doña Mari".
+        static let name = Font.custom("DMSans36pt-Bold", size: 34, relativeTo: .largeTitle)
         /// Texto de las pastillas blancas y del botón de hablar.
-        static let pill = avenir("DemiBold", 20, .title3)
+        static let pill = dm("SemiBold", 20, .title3)
         /// "Ayuda" en la pastilla de arriba.
-        static let helpPill = avenir("Bold", 19, .headline)
+        static let helpPill = dm("Bold", 19, .headline)
         /// "Le escucho, Doña Mari".
-        static let listening = avenir("DemiBold", 22, .title2)
+        static let listening = dm("SemiBold", 22, .title2)
         /// Texto de apoyo: "Usted preguntó por su pastilla", "Faltan 20 minutos".
-        static let support = avenir("Regular", 22, .title2)
+        static let support = dm("Regular", 22, .title2)
         /// "Mijo" en la tarjeta y "Su nieto en el teléfono" debajo.
-        static let cardName = avenir("Bold", 22, .title2)
-        static let cardRole = avenir("Regular", 20, .title3)
+        static let cardName = dm("Bold", 22, .title2)
+        static let cardRole = dm("Regular", 20, .title3)
         /// Etiquetas de la tarjeta: "Losartán 50 mg".
-        static let chip = avenir("DemiBold", 20, .title3)
+        static let chip = dm("SemiBold", 20, .title3)
         /// Botón café grande: "Ya terminé", "Ya me la tomé".
-        static let primaryButton = avenir("Bold", 24, .title2)
+        static let primaryButton = dm("Bold", 24, .title2)
         /// Pastilla "Escuchar".
-        static let pillBold = avenir("Bold", 21, .title3)
+        static let pillBold = dm("Bold", 21, .title3)
 
-        /// Tamaños de la letra con serifa (New York). Se usan con `.serif(_:)`.
+        /// Tamaños de los títulos grandes. Se usan con `.display(_:)`.
         static let quoteSize: CGFloat = 34   // lo que dijo la persona
         static let titleSize: CGFloat = 40   // "Mijo le contesta"
         static let answerSize: CGFloat = 36  // la respuesta de Mijo
@@ -89,24 +91,24 @@ enum Theme {
         static let doneSize: CGFloat = 48      // "¡Listo, Doña Mari!"
         static let inputSize: CGFloat = 34     // lo que escribe en el registro
         /// Texto de apoyo grande en Bienvenida y ¡Listo!
-        static let lead = avenir("Regular", 24, .title2)
+        static let lead = dm("Regular", 24, .title2)
         /// "Paso 1 de 4", "Su nombre".
-        static let stepLabel = avenir("DemiBold", 20, .title3)
-        static let fieldLabel = avenir("DemiBold", 21, .title3)
+        static let stepLabel = dm("SemiBold", 20, .title3)
+        static let fieldLabel = dm("SemiBold", 21, .title3)
         /// Nombre de la persona de confianza.
-        static let contactName = avenir("Bold", 28, .title)
+        static let contactName = dm("Bold", 28, .title)
         /// Renglones de permisos: "Micrófono".
-        static let rowTitle = avenir("Bold", 23, .title2)
+        static let rowTitle = dm("Bold", 23, .title2)
         /// "Posible caída" en la pastilla roja de arriba.
-        static let alertPill = avenir("Bold", 20, .title3)
+        static let alertPill = dm("Bold", 20, .title3)
         /// Botón de texto "Llamar al 911".
-        static let textButton = avenir("Bold", 22, .title2)
+        static let textButton = dm("Bold", 22, .title2)
         /// Estado de cada pastilla: "Tomada", "Ahora".
-        static let status = avenir("Bold", 22, .title2)
-        static let statusSoft = avenir("DemiBold", 22, .title2)
+        static let status = dm("Bold", 22, .title2)
+        static let statusSoft = dm("SemiBold", 22, .title2)
         /// Renglones de la ficha médica.
-        static let cardRow = avenir("Regular", 20, .title3)
-        static let cardRowBold = avenir("DemiBold", 20, .title3)
+        static let cardRow = dm("Regular", 20, .title3)
+        static let cardRowBold = dm("SemiBold", 20, .title3)
     }
 
     // MARK: Espaciado
@@ -181,11 +183,16 @@ enum Theme {
         static let nowTag: CGFloat = 44
         /// Botón de solo texto ("Llamar al 911").
         static let textButton: CGFloat = 52
+        /// Pantalla de caída: alto de la mancha y tamaño de la ilustración encima.
+        static let blob: CGFloat = 230
+        static let illustration: CGFloat = 104
+        /// Barra de avance de los pasos y de la cuenta regresiva.
+        static let progressBar: CGFloat = 6
     }
 }
 
-/// Letra con serifa (New York) que crece con Dynamic Type, igual que el resto.
-private struct SerifFont: ViewModifier {
+/// Título grande en DM Sans (versión 36pt) que crece con Dynamic Type, igual que el resto.
+private struct DisplayFont: ViewModifier {
     @ScaledMetric private var size: CGFloat
     let weight: Font.Weight
 
@@ -195,14 +202,19 @@ private struct SerifFont: ViewModifier {
     }
 
     func body(content: Content) -> some View {
-        content.font(.system(size: size, weight: weight, design: .serif))
+        // Solo hay dos grosores para títulos: negrita y seminegrita.
+        let nombre = switch weight {
+        case .bold, .heavy, .black: "DMSans36pt-Bold"
+        default: "DMSans36pt-SemiBold"
+        }
+        content.font(.custom(nombre, fixedSize: size))
     }
 }
 
 extension View {
-    /// `.serif(Theme.Typography.answerSize)`
-    func serif(_ size: CGFloat, weight: Font.Weight = .medium) -> some View {
-        modifier(SerifFont(size: size, weight: weight))
+    /// `.display(Theme.Typography.answerSize, weight: .semibold)`
+    func display(_ size: CGFloat, weight: Font.Weight = .bold) -> some View {
+        modifier(DisplayFont(size: size, weight: weight))
     }
 }
 

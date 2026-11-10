@@ -16,7 +16,7 @@ Marca: [ ] pendiente · [x] hecho.
 - [x] Router de emergencia por palabras clave (por ahora contesta con frase fija + botón "Llamar a Leo"; el protocolo es el Bloque 4)
 - [x] Agente: `LanguageModelSession` con instrucciones de "nieto" + herramientas `llamarFamiliar`, `crearRecordatorioMedicina`, `consultarMedicina`, `registrarComida` — **sin probar con la IA real**
 - [x] Herramienta `avisarFamilia`: aviso por ntfy a toda la familia sin tocar nada · **sin probar en iPhone**
-- [ ] Herramienta `decirDireccion` (CoreLocation)
+- [x] Herramienta `decirDireccion` ("¿dónde estoy?"; `LocationService` con GPS + MapKit) · **sin probar en iPhone**
 - [x] `mandarWhatsApp`: Mijo abre WhatsApp con el mensaje escrito (1 toque en Enviar; si no hay WhatsApp, Mensajes) · **sin probar en iPhone**
 - [x] `abrirApp` (YouTube, Netflix, WhatsApp, Música, Mapas, Spotify, Facebook; si no está, su web) y `buscarEnYouTube`, con pista corta en voz · **sin probar en iPhone**
 - [x] Mijo "hace cosas" (tipo Muse, aprobado 9 nov 20:25): `abrirApp` (Netflix/YouTube/WhatsApp…), `buscarEnYouTube`, pista corta
@@ -54,8 +54,11 @@ Marca: [ ] pendiente · [x] hecho.
 
 ## Bloque 4 · Caídas (lunes, ~20:30–22:00)
 - [x] Protocolo fijo con voz y botones gigantes de respaldo: pantalla "¿Está bien?" (diseño `Ayuda`), cuenta de 30 s, escucha "estoy bien"/"no"/"ayuda", ntfy urgente + llamada automática, ficha médica. Botón Ayuda de Inicio y "me caí" por voz llegan aquí
-- [ ] Rama "me duele": ntfy + pantalla de emergencia + dirección en voz (CoreLocation) + ficha médica
-- [ ] Rama "no me duele": pasos para levantarse
+- [x] Caída pregunta "¿Le duele algo?" (también si lo dijo por voz)
+- [x] Rama "me duele" / sin respuesta: ntfy urgente con dirección + botón "Ver en el mapa", dirección en voz, llamada, ficha médica
+- [x] Rama "no me duele": ntfy (alta) con dirección, 6 pasos para levantarse uno a uno ("Paso 3 de 6"), "¿Ya se pudo levantar?"; "no puedo" o 1 min sin respuesta → pide ayuda. Cada paso espera "ya" (o 15 s); ⏮ 🔊 ⏭ para moverse
+- [x] Rediseño de la pantalla de emergencia inspirado en las plantillas de Leo (`~/Downloads/template*App.webp`) con los colores del equipo: título arriba, ilustración SF Symbol sobre mancha (`DesignSystem/BlobShape`), barra por segmentos, controles redondos
+- [x] Permiso de ubicación (clave en .xcodeproj, con OK de Leo) y 3.er permiso en el registro · **todo sin probar en iPhone**
 - **Listo cuando:** el camino completo funciona sin tocar más de 2 veces
 
 ## Bloque 5 · Siri y configuración (martes 10, ~8:00–10:00)
@@ -67,6 +70,7 @@ Marca: [ ] pendiente · [x] hecho.
 - [ ] ⚙️ Usuario: firma con Apple ID, Modo desarrollador en el iPhone, instalar
 - [ ] Probar todo en el iPhone 17 Pro (voz, llamadas, ntfy, Siri)
 - [x] Pulido: siempre modo claro, deja de escuchar tras 8 s de silencio, transición escuchando↔respuesta, barras que ondulan mientras piensa, vibración en botones/alerta/confirmación, estado vacío "Agregar mis pastillas", revisado a letra XXXL
+- [x] Letra DM Sans en toda la app (elegida por Leo) y tarjetas derechas sin tarjeta de atrás (`WhiteCard`)
 - [ ] Pulido pendiente tras la prueba de Leo en el iPhone
 - [ ] Deseables si hay tiempo (orden del PRD)
 

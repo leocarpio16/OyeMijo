@@ -4,7 +4,7 @@
 //
 //  Marco de cada paso del registro, según el diseño del equipo: regresar,
 //  puntitos de avance, bocina para repetir la pregunta, pregunta grande con
-//  serifa, tarjeta inclinada y botón café abajo (con micrófono si aplica).
+//  letra grande, tarjeta blanca y botón café abajo (con micrófono si aplica).
 //
 
 import SwiftUI
@@ -41,7 +41,7 @@ struct OnboardingStep<Content: View>: View {
                 VStack(spacing: Theme.Spacing.section) {
                     VStack(spacing: Theme.Spacing.s) {
                         Text(titulo)
-                            .serif(Theme.Typography.titleSize)
+                            .display(Theme.Typography.titleSize)
                             .foregroundStyle(Theme.Palette.cafe)
                         Text(subtitulo)
                             .font(Theme.Typography.support)
@@ -49,7 +49,7 @@ struct OnboardingStep<Content: View>: View {
                     }
                     .multilineTextAlignment(.center)
 
-                    TiltedCard { content }
+                    WhiteCard { content }
                 }
                 .padding(.horizontal, margen)
             }
@@ -103,7 +103,7 @@ struct OnboardingHero: View {
 
                 VStack(spacing: Theme.Spacing.s + 2) {
                     Text(titulo)
-                        .serif(titleSize)
+                        .display(titleSize)
                         .foregroundStyle(Theme.Palette.cafe)
                         .minimumScaleFactor(0.7)
                     Text(texto)

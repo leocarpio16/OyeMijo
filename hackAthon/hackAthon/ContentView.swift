@@ -6,7 +6,7 @@
 //
 //  Inicio de Mijo, según el diseño "Oye Mijito – Pantallas" del equipo:
 //  - arriba, un panel ámbar con Mijo grande y la pastilla "Ayuda",
-//  - el saludo centrado ("Buenos días," + nombre en letra con serifa),
+//  - el saludo centrado ("Buenos días," + nombre en letra grande),
 //  - la siguiente medicina en una pastilla blanca,
 //  - abajo, el botón redondo para hablar con Mijo.
 //

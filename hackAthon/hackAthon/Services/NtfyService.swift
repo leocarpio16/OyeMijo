@@ -21,15 +21,19 @@ nonisolated enum NtfyService {
     /// Manda el aviso. Regresa true si ntfy.sh lo recibió.
     @discardableResult
     static func avisar(tema: String, titulo: String, mensaje: String,
-                       prioridad: Prioridad, etiquetas: [String] = []) async -> Bool {
+                       prioridad: Prioridad, etiquetas: [String] = [], mapa: URL? = nil) async -> Bool {
         // Se manda como JSON para que los acentos y la ñ lleguen bien.
-        let cuerpo: [String: Any] = [
+        var cuerpo: [String: Any] = [
             "topic": tema,
             "title": titulo,
             "message": mensaje,
             "priority": prioridad.rawValue,
             "tags": etiquetas,
         ]
+        if let mapa {
+            // Botón "Ver en el mapa" dentro de la notificación de la familia.
+            cuerpo["actions"] = [["action": "view", "label": "Ver en el mapa", "url": mapa.absoluteString]]
+        }
         guard let url = URL(string: "https://ntfy.sh/"),
               let datos = try? JSONSerialization.data(withJSONObject: cuerpo) else { return false }
         var peticion = URLRequest(url: url, timeoutInterval: 10)

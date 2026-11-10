@@ -37,6 +37,7 @@ final class OnboardingModel {
     var persona: PersonaDeConfianza?
     private(set) var microfonoListo = false
     private(set) var avisosListos = false
+    private(set) var ubicacionLista = false
     /// Tema de ntfy: corto para poder escribirlo, largo para que nadie lo adivine.
     let tema = OnboardingModel.nuevoTema()
 
@@ -69,7 +70,7 @@ final class OnboardingModel {
         case .nombre: "¿Cómo le gusta que le diga? Dígamelo o escríbalo."
         case .contacto: "¿A quién le aviso si me necesita? Elija a su persona de confianza."
         case .conectar: "Ahora \(persona?.nombre ?? "su familiar") escanea este código con su celular."
-        case .permisos: "Necesito dos permisos para escucharle y cuidarle. Toque Permitir todo."
+        case .permisos: "Necesito tres permisos para escucharle y cuidarle. Toque Permitir todo."
         case .listo: "¡Listo, \(nombre)! Ya puede hablarme cuando quiera. Toque el botón o diga: Oye Siri, habla con Mijo."
         }
     }
@@ -116,6 +117,7 @@ final class OnboardingModel {
         microfonoListo = AVAudioApplication.shared.recordPermission == .granted
             && SFSpeechRecognizer.authorizationStatus() == .authorized
         avisosListos = await UNUserNotificationCenter.current().notificationSettings().authorizationStatus == .authorized
+        ubicacionLista = LocationService.permitido
     }
 
     func permitirMicrofono() async {
@@ -128,9 +130,16 @@ final class OnboardingModel {
         await revisarPermisos()
     }
 
+    /// Se pide aquí para que en una emergencia ya esté dado (y no salga la pregunta en ese momento).
+    func permitirUbicacion() async {
+        _ = await LocationService.ubicacionActual(segundos: 60)
+        await revisarPermisos()
+    }
+
     func permitirTodo() async {
         if !microfonoListo { await permitirMicrofono() }
         if !avisosListos { await permitirAvisos() }
+        if !ubicacionLista { await permitirUbicacion() }
         siguiente()
     }
 

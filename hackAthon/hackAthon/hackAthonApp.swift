@@ -18,6 +18,7 @@ struct hackAthonApp: App {
     let container = Persistence.container
 
     init() {
+        Fuentes.registrar()
         // Para probar los avisos: la familia se suscribe a este tema en la app ntfy
         // (en el registro por voz se comparte con un código QR).
         if let tema = try? container.mainContext.fetch(FetchDescriptor<Ajustes>()).first?.temaNtfy {

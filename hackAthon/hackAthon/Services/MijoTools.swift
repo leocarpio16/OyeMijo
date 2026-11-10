@@ -93,6 +93,19 @@ nonisolated struct BuscarEnYouTubeTool: Tool {
     }
 }
 
+nonisolated struct DecirDireccionTool: Tool {
+    let acciones: MijoActions
+    let name = "decirDireccion"
+    let description = "Dice en qué dirección está la persona ahorita, cuando pregunta dónde está o cuál es su dirección."
+
+    @Generable
+    struct Arguments {}
+
+    func call(arguments: Arguments) async throws -> String {
+        await acciones.decirDireccion()
+    }
+}
+
 nonisolated struct CrearRecordatorioMedicinaTool: Tool {
     let acciones: MijoActions
     let name = "crearRecordatorioMedicina"

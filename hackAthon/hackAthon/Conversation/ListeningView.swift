@@ -34,7 +34,7 @@ struct ListeningView: View {
                         .foregroundStyle(Theme.Palette.cafeSoft)
                     if !texto.isEmpty {
                         Text("“\(texto)”")
-                            .serif(Theme.Typography.quoteSize)
+                            .display(Theme.Typography.quoteSize)
                             .foregroundStyle(Theme.Palette.cafe)
                             .lineLimit(4)
                             .truncationMode(.head) // si es larga, se ve lo último que dijo

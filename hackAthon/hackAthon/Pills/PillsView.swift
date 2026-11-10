@@ -45,7 +45,7 @@ struct PillsView: View {
                 VStack(spacing: Theme.Spacing.section) {
                     VStack(spacing: Theme.Spacing.s) {
                         Text("Sus pastillas de hoy")
-                            .serif(Theme.Typography.titleSize)
+                            .display(Theme.Typography.titleSize)
                             .foregroundStyle(Theme.Palette.cafe)
                         Text(subtitulo)
                             .font(Theme.Typography.support)
@@ -55,17 +55,17 @@ struct PillsView: View {
 
                     if dosis.isEmpty {
                         // Recién registrada: se le dice cómo agregar su primera pastilla.
-                        TiltedCard(spacing: Theme.Spacing.s) {
+                        WhiteCard(spacing: Theme.Spacing.s) {
                             Text("Dígale a Mijo:")
                                 .font(Theme.Typography.support)
                                 .foregroundStyle(Theme.Palette.cafeSoft)
                             Text("“Recuérdame mi pastilla de la presión a las 9 de la noche”")
-                                .serif(Theme.Typography.quoteSize)
+                                .display(Theme.Typography.quoteSize)
                                 .foregroundStyle(Theme.Palette.cafe)
                                 .multilineTextAlignment(.center)
                         }
                     } else {
-                        TiltedCard(spacing: 0) {
+                        WhiteCard(spacing: 0) {
                             ForEach(dosis) { una in
                                 renglon(una)
                                 if una.id != dosis.last?.id {
