@@ -134,6 +134,7 @@ enum NotificationService {
             case Accion.tomada:
                 context.insert(Toma(medicina: medicina, programada: horario.fechaDeHoy,
                                     estado: .tomada, respondida: .now))
+                await FamilyAlerts.avisarTomada(medicina, context: context)
             case Accion.masTarde:
                 context.insert(Toma(medicina: medicina, programada: horario.fechaDeHoy,
                                     estado: .pospuesta, respondida: .now))

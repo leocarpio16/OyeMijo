@@ -59,4 +59,16 @@ enum FamilyAlerts {
                 prioridad: .normal, etiquetas: ["fork_and_knife"])
         }
     }
+
+    /// "Ya se tomó su pastilla": aviso tranquilo a la familia cada vez que la marca
+    /// (por voz, en "Sus pastillas de hoy" o con el botón de la notificación).
+    static func avisarTomada(_ medicina: Medicina, context: ModelContext) async {
+        guard let ajustes = try? context.fetch(FetchDescriptor<Ajustes>()).first, !ajustes.temaNtfy.isEmpty else { return }
+        let hora = Date.now.formatted(.dateTime.hour().minute().locale(Locale(identifier: "es_MX")))
+        await NtfyService.avisar(
+            tema: ajustes.temaNtfy,
+            titulo: "\(ajustes.comoLlamarla) ya se tomó su pastilla",
+            mensaje: "Se tomó su \(medicina.nombreParaMostrar.lowercased()) a las \(hora).",
+            prioridad: .normal, etiquetas: ["white_check_mark", "pill"])
+    }
 }

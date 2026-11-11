@@ -346,6 +346,9 @@ final class MijoActions {
         context.insert(Toma(medicina: medicina, programada: horario.fechaDeHoy,
                             estado: .tomada, respondida: .now))
         try? context.save()
+        // La familia se entera de que ya se la tomó (en paralelo: Mijo no espera al internet).
+        let context = self.context
+        Task { await FamilyAlerts.avisarTomada(medicina, context: context) }
     }
 
     // MARK: Comidas

@@ -153,6 +153,8 @@ struct PillsView: View {
         context.insert(Toma(medicina: una.medicina, programada: una.horario.fechaDeHoy,
                             estado: .tomada, respondida: .now))
         try? context.save()
+        let medicina = una.medicina, context = self.context
+        Task { await FamilyAlerts.avisarTomada(medicina, context: context) }
         Haptics.success()
         Task { await voz.hablar("Muy bien, ya lo anoté.") }
     }
